@@ -1,0 +1,161 @@
+.person-photo {
+    width: 84px;
+    height: 84px;
+    object-fit: cover;
+    border-radius: 1rem;
+    border: 1px solid #404048;
+    background: #111;
+}
+
+.alphabet-bar .btn {
+    min-width: 2.5rem;
+}
+
+.navbar,
+.footer,
+footer {
+    color: #d1d1d1;
+}
+
+html, body {
+    min-height: 100%;
+}
+
+body {
+    background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.06), transparent 32%),
+        linear-gradient(180deg, #0b0b0d 0%, #111214 50%, #0a0a0b 100%);
+    color: #e7e7e7;
+}
+
+.app-main {
+    min-height: calc(100vh - 140px);
+    padding-top: 2rem;
+    padding-bottom: 2.5rem;
+}
+
+.launch-screen {
+    min-height: calc(100vh - 140px);
+    background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 25%),
+        linear-gradient(180deg, #0a0a0b 0%, #111214 100%);
+}
+
+.letter-spaced {
+    letter-spacing: 0.35em;
+}
+
+.launch-button {
+    min-width: 240px;
+    box-shadow: 0 18px 44px rgba(255, 255, 255, 0.08);
+}
+
+.loader-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    display: grid;
+    place-items: center;
+    background: rgba(5, 5, 6, 0.82);
+    backdrop-filter: blur(6px);
+}
+
+.loader-panel {
+    padding: 1.75rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1.25rem;
+    background: rgba(20, 20, 22, 0.92);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.hero-panel {
+    background: linear-gradient(135deg, #050505 0%, #181818 55%, #2a2a2a 100%);
+    color: #fff;
+    border-radius: 1.25rem;
+}
+
+.home-shell {
+    max-width: 1180px;
+}
+
+.home-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.home-header .nav-link {
+    color: #b9b9b9;
+}
+
+.home-header .nav-link:hover,
+.home-header .nav-link:focus,
+.home-header .nav-link.active {
+    color: #ffffff;
+}
+
+.home-intro {
+    padding-top: 0.5rem;
+}
+
+.letter-spaced-sm {
+    letter-spacing: 0.28em;
+}
+.min-w-0 {
+    min-width: 0;
+}
+
+.home-search-form-simple {
+    max-width: 520px;
+}
+
+.create-page-shell {
+    max-width: 920px;
+    margin: 0 auto;
+}
+
+.create-form-panel {
+    background: rgba(17, 17, 18, 0.72);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+}
+
+.create-form-panel .form-control,
+.create-form-panel .form-select {
+    background-color: #161719;
+    border-color: #3a3b40;
+    color: #f3f3f3;
+}
+
+.create-form-panel .form-control:focus,
+.create-form-panel .form-select:focus {
+    border-color: #7d7f85;
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.08);
+}
+
+.create-form-panel .form-control::placeholder {
+    color: #8c8f96;
+}
+
+.detail-card {
+    background: rgba(17, 17, 18, 0.78);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+}
+
+.detail-sidebar {
+    max-width: 360px;
+}
+
+.detail-photo {
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 1.25rem;
+    border: 1px solid #3a3b40;
+    background: #111;
+}
+
+.detail-text {
+    white-space: pre-wrap;
+    color: #e7e7e7;
+    line-height: 1.65;
+    max-width: 55rem;
+}

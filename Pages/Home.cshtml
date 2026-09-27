@@ -1,0 +1,56 @@
+@page
+@model HomeModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="home-shell mx-auto">
+    <header class="home-header d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4 py-3 px-1">
+        <a class="navbar-brand fw-bold text-white mb-0" asp-page="/Home">FaceFiles</a>
+        <nav class="navbar navbar-expand p-0">
+            <div class="navbar-nav ms-lg-auto gap-lg-2">
+                <a class="nav-link px-2" asp-page="/Home">Home</a>
+                <a class="nav-link px-2" asp-page="/People/Create">Add Person</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="mb-4">
+        <p class="text-uppercase small text-secondary mb-2 letter-spaced-sm">FaceFiles</p>
+        <h1 class="h2 fw-semibold mb-2">People records in one place.</h1>
+        <p class="mb-3 text-secondary">Search the names below, open a person, or add a new record.</p>
+        <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-outline-light" asp-page="/People/Create">Add Person</a>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <form method="get" class="home-search-form-simple">
+            <div class="input-group">
+                <input type="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="Search users..." aria-label="Search users" />
+                <button class="btn btn-light" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <div>
+        <h2 class="h4 mb-3">Recently added users</h2>
+
+        @if (Model.People.Count == 0)
+        {
+            <p class="text-secondary mb-0">No users added yet. Add the first person to start the list.</p>
+        }
+        else
+        {
+            <ul class="list-unstyled mb-0">
+                @foreach (var person in Model.People)
+                {
+                    <li class="py-3 border-bottom border-secondary-subtle d-flex flex-column flex-md-row justify-content-between gap-2">
+                        <a class="text-decoration-none text-white fw-semibold" asp-page="/People/Details" asp-route-id="@person.Id">@person.FirstName @person.LastName</a>
+                        <span class="text-secondary small">Added @person.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy")</span>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>

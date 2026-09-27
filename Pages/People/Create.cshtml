@@ -1,0 +1,51 @@
+@page
+@model FaceFiles.Pages.People.CreateModel
+@{
+    ViewData["Title"] = "Add Person";
+}
+
+<div class="create-page-shell">
+    <div class="d-flex flex-column flex-md-row align-items-md-end gap-3 mb-4">
+        <a class="btn btn-outline-light" asp-page="/Home">Back to Home</a>
+        <div>
+            <p class="text-uppercase small text-secondary mb-2 letter-spaced-sm">FaceFiles</p>
+            <h1 class="h3 mb-2">Add Person</h1>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="Person.FirstName" class="form-label">First name</label>
+            <input asp-for="Person.FirstName" class="form-control" placeholder="First name" />
+            <span asp-validation-for="Person.FirstName" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Person.LastName" class="form-label">Last name</label>
+            <input asp-for="Person.LastName" class="form-control" placeholder="Last name" />
+            <span asp-validation-for="Person.LastName" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Person.Details" class="form-label">Details</label>
+            <textarea asp-for="Person.Details" class="form-control" rows="4" placeholder="Add notes, role, or any useful details..."></textarea>
+            <span asp-validation-for="Person.Details" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PhotoUpload" class="form-label">Photo add</label>
+            <input asp-for="PhotoUpload" type="file" class="form-control" accept="image/*" />
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <button class="btn btn-light" type="submit">Save Person</button>
+            <a class="btn btn-outline-secondary" asp-page="/Home">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

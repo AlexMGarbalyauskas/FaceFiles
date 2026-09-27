@@ -1,0 +1,35 @@
+@page "{id:int}"
+@model FaceFiles.Pages.People.DetailsModel
+@{
+    ViewData["Title"] = "Person Details";
+}
+
+@if (Model.Person is null)
+{
+    <div class="alert alert-warning">Person not found.</div>
+}
+else
+{
+    <div class="detail-card rounded-4 border border-secondary-subtle p-4 p-xl-5">
+        <div class="row g-4 align-items-start">
+            <div class="col-md-4 col-lg-3">
+                <div class="detail-sidebar">
+                    <img class="detail-photo img-fluid" src="@(string.IsNullOrWhiteSpace(Model.Person.PhotoPath) ? "https://via.placeholder.com/360x360?text=No+Photo" : Model.Person.PhotoPath)" alt="@Model.Person.FirstName @Model.Person.LastName" />
+                    <h1 class="h3 mt-3 mb-1">@Model.Person.FirstName @Model.Person.LastName</h1>
+                    <p class="text-secondary mb-0">Uploaded @Model.Person.CreatedAt.ToLocalTime().ToString("MMMM dd, yyyy")</p>
+                </div>
+            </div>
+
+            <div class="col-md-8 col-lg-9">
+                <h2 class="h5 mb-3">User details</h2>
+                <p class="detail-text mb-4">@(string.IsNullOrWhiteSpace(Model.Person.Details) ? "No details entered." : Model.Person.Details)</p>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-outline-light" asp-page="Edit" asp-route-id="@Model.Person.Id">Edit</a>
+                    <a class="btn btn-outline-danger" asp-page="Delete" asp-route-id="@Model.Person.Id">Delete</a>
+                    <a class="btn btn-light" asp-page="/Home">Back Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

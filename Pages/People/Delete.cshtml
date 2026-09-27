@@ -1,0 +1,25 @@
+@page "{id:int}"
+@model FaceFiles.Pages.People.DeleteModel
+@{
+    ViewData["Title"] = "Delete Person";
+}
+
+@if (Model.Person is null)
+{
+    <div class="alert alert-warning">Person not found.</div>
+}
+else
+{
+    <div class="card shadow-sm border-danger">
+        <div class="card-body">
+            <h1 class="h4 text-danger">Delete Person</h1>
+            <p>Are you sure you want to delete <strong>@Model.Person.FirstName @Model.Person.LastName</strong>?</p>
+            <form method="post">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                    <a class="btn btn-outline-secondary" asp-page="Details" asp-route-id="@Model.Person.Id">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+}

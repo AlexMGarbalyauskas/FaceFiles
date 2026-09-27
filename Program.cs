@@ -18,13 +18,18 @@ using (var scope = app.Services.CreateScope())
     db.Database.EnsureCreated();
 }
 
+var isRender = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("RENDER"));
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment() && !isRender)
+{
+    app.UseHttpsRedirection();
+}
 app.UseStaticFiles();
 app.UseRouting();
 

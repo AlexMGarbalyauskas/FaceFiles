@@ -4,52 +4,64 @@
     ViewData["Title"] = "Add Person";
 }
 
-<div class="create-page-shell">
-    <div class="d-flex flex-column flex-md-row align-items-md-end gap-3 mb-4">
-        <a class="btn btn-outline-light" asp-page="/Home">Back to Home</a>
-        <div>
-            <p class="text-uppercase small text-secondary mb-2 letter-spaced-sm">FaceFiles</p>
-            <h1 class="h3 mb-2">Add Person</h1>
+<div class="detail-page-shell create-detail-page">
+    <video class="detail-background-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+        <source src="~/videos/background.mp4" type="video/mp4" />
+    </video>
+    <div class="detail-background-overlay" aria-hidden="true"></div>
+
+    <div class="detail-page-content">
+        <div class="detail-back-box">
+            <a class="btn btn-outline-light" asp-page="/Home">Back Home</a>
+        </div>
+
+        <div class="detail-card">
+            <div class="create-card-heading">
+                <p class="text-uppercase small text-secondary mb-2 letter-spaced-sm">FaceFiles</p>
+                <h1 class="detail-name">Add Person</h1>
+            </div>
+
+            <div class="detail-divider"></div>
+
+            <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="create-field">
+                    <label asp-for="Person.FirstName" class="detail-label">First name</label>
+                    <input asp-for="Person.FirstName" class="form-control" placeholder="First name" />
+                    <span asp-validation-for="Person.FirstName" class="text-danger small"></span>
+                </div>
+
+                <div class="create-field">
+                    <label asp-for="Person.LastName" class="detail-label">Surname</label>
+                    <input asp-for="Person.LastName" class="form-control" placeholder="Surname" />
+                    <span asp-validation-for="Person.LastName" class="text-danger small"></span>
+                </div>
+
+                <div class="create-field">
+                    <label asp-for="Person.DateOfBirth" class="detail-label">Date of Birth</label>
+                    <input asp-for="Person.DateOfBirth" class="form-control" />
+                    <span asp-validation-for="Person.DateOfBirth" class="text-danger small"></span>
+                </div>
+
+                <div class="create-field">
+                    <label asp-for="Person.Details" class="detail-label">Bio</label>
+                    <textarea asp-for="Person.Details" class="form-control" rows="4" placeholder="Write a bio"></textarea>
+                    <span asp-validation-for="Person.Details" class="text-danger small"></span>
+                </div>
+
+                <div class="create-field">
+                    <label asp-for="PhotoUpload" class="detail-label">Photo</label>
+                    <input asp-for="PhotoUpload" type="file" class="form-control" accept="image/*" />
+                </div>
+
+                <div class="create-actions">
+                    <button class="btn btn-light" type="submit">Save Person</button>
+                    <a class="btn btn-outline-secondary" asp-page="/Home">Cancel</a>
+                </div>
+            </form>
         </div>
     </div>
-
-    <form method="post" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-        <div class="mb-3">
-            <label asp-for="Person.FirstName" class="form-label">First name</label>
-            <input asp-for="Person.FirstName" class="form-control" placeholder="First name" />
-            <span asp-validation-for="Person.FirstName" class="text-danger small"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Person.LastName" class="form-label">Last name</label>
-            <input asp-for="Person.LastName" class="form-control" placeholder="Last name" />
-            <span asp-validation-for="Person.LastName" class="text-danger small"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Person.DateOfBirth" class="form-label">Date of birth</label>
-            <input asp-for="Person.DateOfBirth" class="form-control" />
-            <span asp-validation-for="Person.DateOfBirth" class="text-danger small"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Person.Details" class="form-label">Details</label>
-            <textarea asp-for="Person.Details" class="form-control" rows="4" placeholder="Add notes, role, or any useful details..."></textarea>
-            <span asp-validation-for="Person.Details" class="text-danger small"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="PhotoUpload" class="form-label">Photo add</label>
-            <input asp-for="PhotoUpload" type="file" class="form-control" accept="image/*" />
-        </div>
-
-        <div class="d-flex flex-wrap gap-2 mt-4">
-            <button class="btn btn-light" type="submit">Save Person</button>
-            <a class="btn btn-outline-secondary" asp-page="/Home">Cancel</a>
-        </div>
-    </form>
 </div>
 
 @section Scripts {

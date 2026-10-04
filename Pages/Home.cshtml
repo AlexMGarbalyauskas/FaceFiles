@@ -48,10 +48,10 @@
             {
                 <section class="alphabet-group mb-4">
                     <h3 class="alphabet-heading h5 mb-2">@group.Key</h3>
-                    <ul class="list-unstyled mb-0">
+                    <ul class="list-unstyled home-directory-list mb-0">
                         @foreach (var person in group)
                         {
-                            <li class="py-2 border-bottom border-secondary-subtle">
+                            <li class="home-directory-row py-2">
                                 <a class="text-decoration-none text-white" asp-page="/People/Details" asp-route-id="@person.Id">
                                     @person.FirstName @person.LastName
                                 </a>

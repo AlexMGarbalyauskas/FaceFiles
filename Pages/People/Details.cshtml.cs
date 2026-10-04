@@ -34,6 +34,18 @@ public class DetailsModel : PageModel
     [BindProperty]
     public IFormFile? PhotoUpload { get; set; }
 
+    [BindProperty]
+    public int DetailIndex { get; set; }
+
+    [BindProperty]
+    public string? EditedDetail { get; set; }
+
+    [BindProperty]
+    public string? NewSocialPlatform { get; set; }
+
+    [BindProperty]
+    public string? NewSocialUrl { get; set; }
+
     public async Task OnGetAsync(int id)
     {
         Person = await _context.People.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
@@ -109,6 +121,74 @@ public class DetailsModel : PageModel
         {
             PhotoStorage.DeletePhoto(_environment, person.PhotoPath);
             person.PhotoPath = await PhotoStorage.SavePhotoAsync(_environment, PhotoUpload);
+            await _context.SaveChangesAsync();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostUpdateDetailAsync(int id)
+    {
+        var person = await FindPersonAsync(id);
+        if (person is null)
+        {
+            return NotFound();
+        }
+
+        var details = person.AdditionalDetails;
+        if (DetailIndex >= 0 && DetailIndex < details.Count)
+        {
+            if (string.IsNullOrWhiteSpace(EditedDetail))
+            {
+                details.RemoveAt(DetailIndex);
+            }
+            else
+            {
+                details[DetailIndex] = EditedDetail.Trim();
+            }
+
+            person.AdditionalDetails = details;
+            await _context.SaveChangesAsync();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostDeletePersonAsync(int id)
+    {
+        var person = await FindPersonAsync(id);
+        if (person is null)
+        {
+            return NotFound();
+        }
+
+        PhotoStorage.DeletePhoto(_environment, person.PhotoPath);
+        _context.People.Remove(person);
+        await _context.SaveChangesAsync();
+
+        return RedirectToPage("/Home");
+    }
+
+    public async Task<IActionResult> OnPostAddSocialLinkAsync(int id)
+    {
+        var person = await FindPersonAsync(id);
+        if (person is null)
+        {
+            return NotFound();
+        }
+
+        var isValidUrl = Uri.TryCreate(NewSocialUrl?.Trim(), UriKind.Absolute, out var socialUri)
+            && (socialUri.Scheme == Uri.UriSchemeHttp || socialUri.Scheme == Uri.UriSchemeHttps);
+
+        if (!string.IsNullOrWhiteSpace(NewSocialPlatform) && isValidUrl)
+        {
+            var links = person.SocialLinks;
+            links.Add(new SocialLink
+            {
+                Platform = NewSocialPlatform.Trim(),
+                Url = NewSocialUrl!.Trim()
+            });
+            person.SocialLinks = links;
             await _context.SaveChangesAsync();
         }
 

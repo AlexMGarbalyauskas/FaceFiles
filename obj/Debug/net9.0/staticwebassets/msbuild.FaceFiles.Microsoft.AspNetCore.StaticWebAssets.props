@@ -12,8 +12,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>3jft96fzue</Fingerprint>
-      <Integrity>IdsZTRWgl02Q8fVBeQ2/RXOiGyuRfbudpwLxyvr4GRc=</Integrity>
+      <Fingerprint>qr6bb6k0kb</Fingerprint>
+      <Integrity>+gVhvQYJ90/RU7f1K4a6C74Ai7qQd1RRZ5yd0b/xV2w=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</OriginalItemSpec>
@@ -36,23 +36,41 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\.gitkeep'))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\bce009d08ac74378875c5d3f74bebde2.jpg'))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\videos\background.mp4'))">
       <SourceType>Package</SourceType>
       <SourceId>FaceFiles</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/FaceFiles</BasePath>
-      <RelativePath>images/user_photos/bce009d08ac74378875c5d3f74bebde2.jpg</RelativePath>
+      <RelativePath>videos/background.mp4</RelativePath>
       <AssetKind>All</AssetKind>
       <AssetMode>All</AssetMode>
       <AssetRole>Primary</AssetRole>
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>h1yu1x5k8q</Fingerprint>
-      <Integrity>1Rz3KrqsC/hD4jwl3mkcQbWb3fOjp2mz3Ek9Sh4PX44=</Integrity>
+      <Fingerprint>lyup8rygm1</Fingerprint>
+      <Integrity>/dychEtSytwodEpYyZrtnestWze7QXwOpEAqt10heps=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\bce009d08ac74378875c5d3f74bebde2.jpg'))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\videos\background.mp4'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\videos\katana-background.mp4'))">
+      <SourceType>Package</SourceType>
+      <SourceId>FaceFiles</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/FaceFiles</BasePath>
+      <RelativePath>videos/katana-background.mp4</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>6mhhcina83</Fingerprint>
+      <Integrity>koiTthMxRKrs/LAPnTdB1YnUKklqZ6VXA4u83EVDKOU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\videos\katana-background.mp4'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>
 </Project>

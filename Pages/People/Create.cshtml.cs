@@ -33,6 +33,7 @@ public class CreateModel : PageModel
             return Page();
         }
 
+        Person.LastName ??= string.Empty;
         Person.PhotoPath = await PhotoStorage.SavePhotoAsync(_environment, PhotoUpload);
         Person.CreatedAt = DateTime.UtcNow;
 

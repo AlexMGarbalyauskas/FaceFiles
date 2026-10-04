@@ -68,6 +68,16 @@ body {
 }
 
 .launch-button {
+.delete-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
     min-width: 240px;
     box-shadow: 0 18px 44px rgba(255, 255, 255, 0.08);
 }
@@ -83,7 +93,9 @@ body {
 }
 
 .loader-panel {
+    background: transparent;
     padding: 1.75rem 2rem;
+    cursor: pointer;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 1.25rem;
     background: rgba(20, 20, 22, 0.92);
@@ -103,26 +115,28 @@ body {
 .home-page-background {
     position: relative;
     min-height: calc(100vh - 120px);
-    overflow: hidden;
     margin: -2rem -0.75rem -2.5rem;
     padding: 2rem 0.75rem 2.5rem;
 }
 
 .home-background-video,
 .home-background-overlay {
-    position: absolute;
+    position: fixed;
     inset: 0;
     width: 100%;
     height: 100%;
+    pointer-events: none;
 }
 
 .home-background-video {
+    z-index: 0;
     object-fit: cover;
     object-position: center;
     opacity: 0.9;
 }
 
 .home-background-overlay {
+    z-index: 0;
     background: linear-gradient(
         90deg,
         rgba(5, 6, 8, 0.82) 0%,
@@ -135,6 +149,54 @@ body {
 .home-content {
     position: relative;
     z-index: 1;
+}
+
+.home-directory-row {
+    width: 100%;
+    margin-left: 0;
+    padding-right: 0;
+    padding-left: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.delete-page {
+    min-height: calc(100vh - 180px);
+    display: grid;
+    place-items: center;
+}
+
+.delete-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: transparent;
+    pointer-events: none;
+}
+
+.delete-confirmation {
+    width: 280px;
+    padding: 1rem;
+    border: 1px solid rgba(220, 53, 69, 0.45);
+    border-radius: 0.6rem;
+    background: rgba(20, 21, 24, 0.94);
+    text-align: center;
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.42);
+    pointer-events: auto;
+}
+
+.delete-icon {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 0 auto 1rem;
+    place-items: center;
+    border: 1px solid rgba(220, 53, 69, 0.5);
+    border-radius: 50%;
+    color: #dc3545;
+    font-size: 1.15rem;
 }
 
 .home-header {
@@ -201,13 +263,80 @@ body {
 
 .detail-card {
     position: relative;
-    max-width: 640px;
+    max-width: 540px;
     margin: 0 auto;
     padding: 1.25rem 1.5rem;
     background: #151618;
     border: 1px solid #3a3b40;
     border-radius: 0.5rem;
     box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+}
+
+.detail-page-shell {
+    position: relative;
+    max-width: 540px;
+    margin: 0 auto;
+}
+
+.detail-background-video,
+.detail-background-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.detail-background-video {
+    z-index: 0;
+    object-fit: cover;
+    opacity: 1;
+}
+
+.detail-background-overlay {
+    z-index: 0;
+    background: transparent;
+}
+
+.detail-page-content {
+    position: relative;
+    z-index: 1;
+}
+
+.create-detail-page .detail-card {
+    max-width: 540px;
+}
+
+.create-card-heading {
+    padding-right: 2rem;
+}
+
+.create-field {
+    display: grid;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.create-field .form-control {
+    background: rgba(20, 21, 24, 0.92);
+    border-color: #3a3b40;
+    color: #f3f3f3;
+}
+
+.create-field .form-control:focus {
+    border-color: #8a8c94;
+    box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.08);
+}
+
+.create-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.detail-back-box {
+    margin-bottom: 0.75rem;
 }
 
 .detail-delete-button {
@@ -220,7 +349,9 @@ body {
     place-items: center;
     border: 1px solid transparent;
     border-radius: 0.35rem;
+    background: transparent;
     color: #aeb0b7;
+    cursor: pointer;
     font-size: 0.9rem;
     text-decoration: none;
 }
@@ -300,28 +431,44 @@ body {
     white-space: pre-wrap;
 }
 
-.detail-editable {
-    width: fit-content;
-    padding: 0;
+.editable-view {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 1.5rem;
+}
+
+.detail-edit-trigger {
+    flex: 0 0 auto;
+    padding: 0.15rem 0.3rem;
     border: 0;
     background: transparent;
-    color: #aeb0b7;
-    text-align: left;
-    text-decoration: underline;
-    text-decoration-color: rgba(255, 255, 255, 0.28);
-    text-underline-offset: 0.2em;
+    color: #8d9098;
+    font-size: 0.8rem;
 }
 
-.detail-editable:hover,
-.detail-editable:focus {
+.detail-edit-trigger:hover,
+.detail-edit-trigger:focus {
     color: #ffffff;
-    text-decoration-color: #ffffff;
 }
 
-.detail-bio-value {
-    display: block;
-    width: 100%;
-    max-width: 620px;
+.bio-display {
+    min-height: 7rem;
+    padding: 0.85rem;
+    border: 1px solid #3a3b40;
+    border-radius: 0.35rem;
+    background: rgba(20, 21, 24, 0.68);
+    cursor: pointer;
+}
+
+.bio-display:hover,
+.bio-display:focus {
+    border-color: #777a82;
+}
+
+.bio-display .detail-text {
+    flex: 1;
     line-height: 1.65;
 }
 
@@ -380,14 +527,66 @@ body {
     margin-top: 1.25rem;
 }
 
+.detail-social {
+    margin-top: 1.25rem;
+}
+
+.social-link-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0 1rem;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.55rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 0.3rem;
+    color: #c8c9ce;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.social-link:hover,
+.social-link:focus {
+    border-color: #8a8c94;
+    color: #ffffff;
+}
+
+.add-social-form {
+    max-width: 560px;
+    margin-top: 0.75rem;
+}
+
+.social-inputs {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: 0.8fr 1.2fr;
+}
+
 .detail-list {
     margin: 0.75rem 0 1rem;
-    padding-left: 1.25rem;
+    padding: 0;
+    list-style: none;
     color: #c8c9ce;
 }
 
+.detail-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .detail-list li + li {
-    margin-top: 0.5rem;
+    margin-top: 0;
+}
+
+@media (max-width: 575.98px) {
+    .social-inputs {
+        grid-template-columns: 1fr;
+    }
 }
 
 .add-detail-link {

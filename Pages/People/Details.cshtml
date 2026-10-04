@@ -12,13 +12,23 @@ else
 {
     var fullName = $"{Model.Person.FirstName} {Model.Person.LastName}".Trim();
     var initials = string.Concat(
-        Model.Person.FirstName.FirstOrDefault(),
-        Model.Person.LastName.FirstOrDefault()).Trim();
+        string.IsNullOrWhiteSpace(Model.Person.FirstName) ? string.Empty : Model.Person.FirstName[..1],
+        string.IsNullOrWhiteSpace(Model.Person.LastName) ? string.Empty : Model.Person.LastName[..1]).ToUpperInvariant();
 
-    <div class="detail-card">
-        <a class="detail-delete-button" asp-page="Delete" asp-route-id="@Model.Person.Id" title="Delete person" aria-label="Delete person">
+    <div class="detail-page-shell">
+        <video class="detail-background-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+            <source src="~/videos/background.mp4" type="video/mp4" />
+        </video>
+        <div class="detail-background-overlay" aria-hidden="true"></div>
+        <div class="detail-page-content">
+        <div class="detail-back-box">
+            <a class="btn btn-outline-light" asp-page="/Home">Back Home</a>
+        </div>
+
+        <div class="detail-card">
+        <button type="button" class="detail-delete-button" id="showDeleteModal" title="Delete person" aria-label="Delete person">
             <i class="bi bi-trash3" aria-hidden="true"></i>
-        </a>
+        </button>
 
         <div class="detail-header">
             <div class="detail-photo-wrap" id="photoHolder">
@@ -46,25 +56,29 @@ else
         <div class="detail-fields">
             <div class="detail-field">
                 <span class="detail-label">Surname</span>
-                <button type="button" class="detail-editable" data-edit-target="surnameForm">
-                    @(string.IsNullOrWhiteSpace(Model.Person.LastName) ? "Add surname" : Model.Person.LastName)
-                </button>
+                <div class="editable-view">
+                    <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Person.LastName) ? "Not provided" : Model.Person.LastName)</span>
+                    <button type="button" class="detail-edit-trigger" data-edit-target="surnameForm" title="Edit surname" aria-label="Edit surname">
+                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                    </button>
+                </div>
                 <form method="post" asp-page-handler="UpdateSurname" class="inline-edit-form d-none" id="surnameForm">
                     <div class="input-group">
-                        <input name="NewSurname" class="form-control" value="@Model.Person.LastName" placeholder="Surname" />
-                        <button class="btn btn-light" type="submit">Save</button>
+                        <input name="NewSurname" class="form-control" value="@Model.Person.LastName" placeholder="Surname" aria-label="Edit surname and press Enter to confirm" />
                     </div>
                 </form>
             </div>
             <div class="detail-field">
                 <span class="detail-label">Date of Birth</span>
-                <button type="button" class="detail-editable" data-edit-target="dateOfBirthForm">
-                    @(Model.Person.DateOfBirth?.ToString("MMMM dd, yyyy") ?? "Add date of birth")
-                </button>
+                <div class="editable-view">
+                    <span class="detail-value">@(Model.Person.DateOfBirth?.ToString("MMMM dd, yyyy") ?? "Not provided")</span>
+                    <button type="button" class="detail-edit-trigger" data-edit-target="dateOfBirthForm" title="Edit date of birth" aria-label="Edit date of birth">
+                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                    </button>
+                </div>
                 <form method="post" asp-page-handler="UpdateDateOfBirth" class="inline-edit-form d-none" id="dateOfBirthForm">
                     <div class="input-group">
-                        <input type="date" name="NewDateOfBirth" class="form-control" value="@(Model.Person.DateOfBirth?.ToString("yyyy-MM-dd"))" />
-                        <button class="btn btn-light" type="submit">Save</button>
+                        <input type="date" name="NewDateOfBirth" class="form-control" value="@(Model.Person.DateOfBirth?.ToString("yyyy-MM-dd"))" aria-label="Edit date of birth and press Enter to confirm" />
                     </div>
                 </form>
             </div>
@@ -72,12 +86,11 @@ else
 
         <div class="detail-bio">
             <h2 class="detail-label">Bio</h2>
-            <button type="button" class="detail-editable detail-bio-value" data-edit-target="bioForm">
-                @(string.IsNullOrWhiteSpace(Model.Person.Details) ? "Add bio" : Model.Person.Details)
-            </button>
+            <div class="bio-display editable-view" data-edit-target="bioForm" role="button" tabindex="0">
+                <span class="detail-text">@(string.IsNullOrWhiteSpace(Model.Person.Details) ? "No bio entered." : Model.Person.Details)</span>
+            </div>
             <form method="post" asp-page-handler="UpdateBio" class="inline-edit-form d-none" id="bioForm">
                 <textarea name="NewBio" class="form-control" rows="4" placeholder="Write a bio">@Model.Person.Details</textarea>
-                <button class="btn btn-light mt-2" type="submit">Save</button>
             </form>
         </div>
 
@@ -86,9 +99,25 @@ else
             @if (Model.Person.AdditionalDetails.Count > 0)
             {
                 <ul class="detail-list">
-                    @foreach (var detail in Model.Person.AdditionalDetails)
+                    @for (var detailIndex = 0; detailIndex < Model.Person.AdditionalDetails.Count; detailIndex++)
                     {
-                        <li>@detail</li>
+                        var detail = Model.Person.AdditionalDetails[detailIndex];
+                        var detailFormId = $"additionalDetailForm-{detailIndex}";
+
+                        <li class="additional-detail-row">
+                            <div class="editable-view">
+                                <span class="detail-value">@detail</span>
+                                <button type="button" class="detail-edit-trigger" data-edit-target="@detailFormId" title="Edit detail" aria-label="Edit detail">
+                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <form method="post" asp-page-handler="UpdateDetail" class="inline-edit-form d-none" id="@detailFormId">
+                                <input type="hidden" name="DetailIndex" value="@detailIndex" />
+                                <div class="input-group">
+                                    <input name="EditedDetail" class="form-control" value="@detail" aria-label="Edit detail and press Enter to confirm" />
+                                </div>
+                            </form>
+                        </li>
                     }
                 </ul>
             }
@@ -97,14 +126,52 @@ else
             <form method="post" asp-page-handler="AddDetail" class="add-detail-form d-none" id="detailForm">
                 <label for="newDetail" class="visually-hidden">Additional detail</label>
                 <div class="input-group">
-                    <input id="newDetail" name="NewDetail" class="form-control" placeholder="Write additional information" />
-                    <button class="btn btn-light" type="submit">Save</button>
+                    <input id="newDetail" name="NewDetail" class="form-control" placeholder="Write additional information, then press Enter" />
                 </div>
             </form>
         </div>
 
-        <div class="detail-actions">
-            <a class="btn btn-light" asp-page="/Home">Back Home</a>
+        <div class="detail-social">
+            <h2 class="detail-label">Social media</h2>
+            @if (Model.Person.SocialLinks.Count > 0)
+            {
+                <div class="social-link-list">
+                    @foreach (var socialLink in Model.Person.SocialLinks)
+                    {
+                        <a class="social-link" href="@socialLink.Url" target="_blank" rel="noopener noreferrer">
+                            <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                            <span>@socialLink.Platform</span>
+                        </a>
+                    }
+                </div>
+            }
+
+            <button type="button" class="add-detail-link" id="showSocialForm">+ Add social link</button>
+            <form method="post" asp-page-handler="AddSocialLink" class="add-social-form d-none" id="socialForm">
+                <div class="social-inputs">
+                    <input name="NewSocialPlatform" class="form-control" placeholder="Facebook, Instagram..." aria-label="Social platform" />
+                    <input name="NewSocialUrl" type="url" class="form-control" placeholder="https://..." aria-label="Social media URL" />
+                </div>
+            </form>
+        </div>
+
+        </div>
+        </div>
+
+        <div class="delete-modal d-none" id="deleteModal" role="dialog" aria-modal="false" aria-labelledby="deleteModalTitle">
+            <div class="delete-confirmation">
+                <div class="delete-icon" aria-hidden="true">
+                    <i class="bi bi-trash3"></i>
+                </div>
+                <h2 class="h4 mb-3" id="deleteModalTitle">Delete this person?</h2>
+                <p class="text-secondary mb-4">This will permanently remove <strong class="text-light">@fullName</strong>.</p>
+                <form method="post" asp-page-handler="DeletePerson">
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        <button class="btn btn-danger px-4" type="submit">Delete Person</button>
+                        <button class="btn btn-outline-light px-4" type="button" id="cancelDelete">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 }
@@ -115,15 +182,35 @@ else
             button.addEventListener('click', () => {
                 const form = document.getElementById(button.dataset.editTarget);
                 form?.classList.remove('d-none');
-                button.classList.add('d-none');
+                button.closest('.editable-view')?.classList.add('d-none');
                 form?.querySelector('input, textarea')?.focus();
             });
+        });
+
+        document.querySelector('textarea[name="NewBio"]')?.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                event.currentTarget.form.submit();
+            }
         });
 
         document.getElementById('showDetailForm')?.addEventListener('click', () => {
             document.getElementById('detailForm')?.classList.remove('d-none');
             document.getElementById('showDetailForm')?.classList.add('d-none');
             document.getElementById('newDetail')?.focus();
+        });
+
+        document.getElementById('showSocialForm')?.addEventListener('click', () => {
+            document.getElementById('socialForm')?.classList.remove('d-none');
+            document.getElementById('showSocialForm')?.classList.add('d-none');
+            document.querySelector('input[name="NewSocialPlatform"]')?.focus();
+        });
+
+        document.querySelector('input[name="NewSocialUrl"]')?.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                event.currentTarget.form.submit();
+            }
         });
 
         const photoHolder = document.getElementById('photoHolder');
@@ -151,5 +238,20 @@ else
 
         document.addEventListener('click', () => photoMenu?.classList.add('d-none'));
         photoMenu?.addEventListener('click', (event) => event.stopPropagation());
+
+        const deleteModal = document.getElementById('deleteModal');
+        document.getElementById('showDeleteModal')?.addEventListener('click', () => {
+            deleteModal?.classList.remove('d-none');
+        });
+
+        document.getElementById('cancelDelete')?.addEventListener('click', () => {
+            deleteModal?.classList.add('d-none');
+        });
+
+        deleteModal?.addEventListener('click', (event) => {
+            if (event.target === deleteModal) {
+                deleteModal.classList.add('d-none');
+            }
+        });
     </script>
 }

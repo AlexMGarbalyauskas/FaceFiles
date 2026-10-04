@@ -29,7 +29,7 @@ public class HomeModel : PageModel
             var term = SearchTerm.Trim().ToLower();
             query = query.Where(person =>
                 person.FirstName.ToLower().Contains(term) ||
-                person.LastName.ToLower().Contains(term));
+                (person.LastName ?? string.Empty).ToLower().Contains(term));
         }
 
         AlphabeticalPeople = await query

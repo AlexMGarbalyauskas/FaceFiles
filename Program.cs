@@ -43,6 +43,15 @@ using (var scope = app.Services.CreateScope())
     {
         db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN AdditionalDetailsJson TEXT NULL");
     }
+
+    var hasSocialLinks = db.Database
+        .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('People') WHERE name = 'SocialLinksJson'")
+        .Single() > 0;
+
+    if (!hasSocialLinks)
+    {
+        db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN SocialLinksJson TEXT NULL");
+    }
 }
 
 var isRender = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("RENDER"));

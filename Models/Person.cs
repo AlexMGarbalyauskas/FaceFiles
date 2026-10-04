@@ -12,7 +12,7 @@ public class Person
     public string FirstName { get; set; } = string.Empty;
 
     [StringLength(100)]
-    public string LastName { get; set; } = string.Empty;
+    public string? LastName { get; set; }
 
     [Display(Name = "Date of Birth")]
     [DataType(DataType.Date)]
@@ -26,6 +26,8 @@ public class Person
 
     public string? AdditionalDetailsJson { get; set; }
 
+    public string? SocialLinksJson { get; set; }
+
     [NotMapped]
     public List<string> AdditionalDetails
     {
@@ -33,6 +35,15 @@ public class Person
             ? []
             : JsonSerializer.Deserialize<List<string>>(AdditionalDetailsJson) ?? [];
         set => AdditionalDetailsJson = JsonSerializer.Serialize(value ?? []);
+    }
+
+    [NotMapped]
+    public List<SocialLink> SocialLinks
+    {
+        get => string.IsNullOrWhiteSpace(SocialLinksJson)
+            ? []
+            : JsonSerializer.Deserialize<List<SocialLink>>(SocialLinksJson) ?? [];
+        set => SocialLinksJson = JsonSerializer.Serialize(value ?? []);
     }
 
     [StringLength(255)]

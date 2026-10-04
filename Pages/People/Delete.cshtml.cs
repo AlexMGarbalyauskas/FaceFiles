@@ -22,13 +22,13 @@ public class DeleteModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        Person = await _context.People.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
-        if (Person is null)
+        var personExists = await _context.People.AsNoTracking().AnyAsync(item => item.Id == id);
+        if (!personExists)
         {
             return NotFound();
         }
 
-        return Page();
+        return RedirectToPage("Details", new { id });
     }
 
     public async Task<IActionResult> OnPostAsync(int id)

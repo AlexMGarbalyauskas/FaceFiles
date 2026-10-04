@@ -14,7 +14,7 @@ public class HomeModel : PageModel
         _context = context;
     }
 
-    public IList<Person> People { get; set; } = [];
+    public IList<Person> AlphabeticalPeople { get; set; } = [];
 
     public string? SearchTerm { get; set; }
 
@@ -32,11 +32,9 @@ public class HomeModel : PageModel
                 person.LastName.ToLower().Contains(term));
         }
 
-        People = await query
-            .OrderByDescending(person => person.CreatedAt)
+        AlphabeticalPeople = await query
+            .OrderBy(person => person.FirstName)
             .ThenBy(person => person.LastName)
-            .ThenBy(person => person.FirstName)
-            .Take(8)
             .ToListAsync();
     }
 }

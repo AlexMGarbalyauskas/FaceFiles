@@ -10,26 +10,146 @@
 }
 else
 {
-    <div class="detail-card rounded-4 border border-secondary-subtle p-4 p-xl-5">
-        <div class="row g-4 align-items-start">
-            <div class="col-md-4 col-lg-3">
-                <div class="detail-sidebar">
-                    <img class="detail-photo img-fluid" src="@(string.IsNullOrWhiteSpace(Model.Person.PhotoPath) ? "https://via.placeholder.com/360x360?text=No+Photo" : Model.Person.PhotoPath)" alt="@Model.Person.FirstName @Model.Person.LastName" />
-                    <h1 class="h3 mt-3 mb-1">@Model.Person.FirstName @Model.Person.LastName</h1>
-                    <p class="text-secondary mb-0">Uploaded @Model.Person.CreatedAt.ToLocalTime().ToString("MMMM dd, yyyy")</p>
+    var fullName = $"{Model.Person.FirstName} {Model.Person.LastName}".Trim();
+    var initials = string.Concat(
+        Model.Person.FirstName.FirstOrDefault(),
+        Model.Person.LastName.FirstOrDefault()).Trim();
+
+    <div class="detail-card">
+        <a class="detail-delete-button" asp-page="Delete" asp-route-id="@Model.Person.Id" title="Delete person" aria-label="Delete person">
+            <i class="bi bi-trash3" aria-hidden="true"></i>
+        </a>
+
+        <div class="detail-header">
+            <div class="detail-photo-wrap" id="photoHolder">
+                @if (string.IsNullOrWhiteSpace(Model.Person.PhotoPath))
+                {
+                    <div class="detail-photo-placeholder" aria-label="No photo">@initials</div>
+                }
+                else
+                {
+                    <img class="detail-photo" src="@Model.Person.PhotoPath" alt="@fullName" onerror="this.classList.add('d-none'); this.nextElementSibling.classList.remove('d-none');" />
+                    <div class="detail-photo-placeholder d-none" aria-label="No photo">@initials</div>
+                }
+                <form method="post" enctype="multipart/form-data" asp-page-handler="AddPhoto" id="photoForm" class="d-none">
+                    <input type="file" id="photoUpload" name="PhotoUpload" accept="image/*" />
+                </form>
+                <div class="photo-context-menu d-none" id="photoContextMenu">
+                    <button type="button" id="addPhotoButton">Add photo</button>
                 </div>
             </div>
+            <h1 class="detail-name">@fullName</h1>
+        </div>
 
-            <div class="col-md-8 col-lg-9">
-                <h2 class="h5 mb-3">User details</h2>
-                <p class="detail-text mb-4">@(string.IsNullOrWhiteSpace(Model.Person.Details) ? "No details entered." : Model.Person.Details)</p>
+        <div class="detail-divider"></div>
 
-                <div class="d-flex flex-wrap gap-2">
-                    <a class="btn btn-outline-light" asp-page="Edit" asp-route-id="@Model.Person.Id">Edit</a>
-                    <a class="btn btn-outline-danger" asp-page="Delete" asp-route-id="@Model.Person.Id">Delete</a>
-                    <a class="btn btn-light" asp-page="/Home">Back Home</a>
-                </div>
+        <div class="detail-fields">
+            <div class="detail-field">
+                <span class="detail-label">Surname</span>
+                <button type="button" class="detail-editable" data-edit-target="surnameForm">
+                    @(string.IsNullOrWhiteSpace(Model.Person.LastName) ? "Add surname" : Model.Person.LastName)
+                </button>
+                <form method="post" asp-page-handler="UpdateSurname" class="inline-edit-form d-none" id="surnameForm">
+                    <div class="input-group">
+                        <input name="NewSurname" class="form-control" value="@Model.Person.LastName" placeholder="Surname" />
+                        <button class="btn btn-light" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+            <div class="detail-field">
+                <span class="detail-label">Date of Birth</span>
+                <button type="button" class="detail-editable" data-edit-target="dateOfBirthForm">
+                    @(Model.Person.DateOfBirth?.ToString("MMMM dd, yyyy") ?? "Add date of birth")
+                </button>
+                <form method="post" asp-page-handler="UpdateDateOfBirth" class="inline-edit-form d-none" id="dateOfBirthForm">
+                    <div class="input-group">
+                        <input type="date" name="NewDateOfBirth" class="form-control" value="@(Model.Person.DateOfBirth?.ToString("yyyy-MM-dd"))" />
+                        <button class="btn btn-light" type="submit">Save</button>
+                    </div>
+                </form>
             </div>
         </div>
+
+        <div class="detail-bio">
+            <h2 class="detail-label">Bio</h2>
+            <button type="button" class="detail-editable detail-bio-value" data-edit-target="bioForm">
+                @(string.IsNullOrWhiteSpace(Model.Person.Details) ? "Add bio" : Model.Person.Details)
+            </button>
+            <form method="post" asp-page-handler="UpdateBio" class="inline-edit-form d-none" id="bioForm">
+                <textarea name="NewBio" class="form-control" rows="4" placeholder="Write a bio">@Model.Person.Details</textarea>
+                <button class="btn btn-light mt-2" type="submit">Save</button>
+            </form>
+        </div>
+
+        <div class="detail-additional">
+            <h2 class="detail-label">Additional details</h2>
+            @if (Model.Person.AdditionalDetails.Count > 0)
+            {
+                <ul class="detail-list">
+                    @foreach (var detail in Model.Person.AdditionalDetails)
+                    {
+                        <li>@detail</li>
+                    }
+                </ul>
+            }
+
+            <button type="button" class="add-detail-link" id="showDetailForm">+ Add detail</button>
+            <form method="post" asp-page-handler="AddDetail" class="add-detail-form d-none" id="detailForm">
+                <label for="newDetail" class="visually-hidden">Additional detail</label>
+                <div class="input-group">
+                    <input id="newDetail" name="NewDetail" class="form-control" placeholder="Write additional information" />
+                    <button class="btn btn-light" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="detail-actions">
+            <a class="btn btn-light" asp-page="/Home">Back Home</a>
+        </div>
     </div>
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('[data-edit-target]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const form = document.getElementById(button.dataset.editTarget);
+                form?.classList.remove('d-none');
+                button.classList.add('d-none');
+                form?.querySelector('input, textarea')?.focus();
+            });
+        });
+
+        document.getElementById('showDetailForm')?.addEventListener('click', () => {
+            document.getElementById('detailForm')?.classList.remove('d-none');
+            document.getElementById('showDetailForm')?.classList.add('d-none');
+            document.getElementById('newDetail')?.focus();
+        });
+
+        const photoHolder = document.getElementById('photoHolder');
+        const photoMenu = document.getElementById('photoContextMenu');
+        const photoForm = document.getElementById('photoForm');
+        const photoUpload = document.getElementById('photoUpload');
+
+        photoHolder?.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            photoMenu?.classList.remove('d-none');
+            photoMenu.style.left = `${event.offsetX}px`;
+            photoMenu.style.top = `${event.offsetY}px`;
+        });
+
+        document.getElementById('addPhotoButton')?.addEventListener('click', () => {
+            photoUpload?.click();
+            photoMenu?.classList.add('d-none');
+        });
+
+        photoUpload?.addEventListener('change', () => {
+            if (photoUpload.files.length > 0) {
+                photoForm.submit();
+            }
+        });
+
+        document.addEventListener('click', () => photoMenu?.classList.add('d-none'));
+        photoMenu?.addEventListener('click', (event) => event.stopPropagation());
+    </script>
 }

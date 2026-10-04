@@ -4,15 +4,16 @@
     ViewData["Title"] = "Home";
 }
 
+<div class="home-page-background">
+    <video class="home-background-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+        <source src="~/videos/katana-background.mp4" type="video/mp4" />
+    </video>
+    <div class="home-background-overlay" aria-hidden="true"></div>
+
+    <div class="home-content">
 <div class="home-shell mx-auto">
     <header class="home-header d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4 py-3 px-1">
         <a class="navbar-brand fw-bold text-white mb-0" asp-page="/Home">FaceFiles</a>
-        <nav class="navbar navbar-expand p-0">
-            <div class="navbar-nav ms-lg-auto gap-lg-2">
-                <a class="nav-link px-2" asp-page="/Home">Home</a>
-                <a class="nav-link px-2" asp-page="/People/Create">Add Person</a>
-            </div>
-        </nav>
     </header>
 
     <div class="mb-4">
@@ -33,24 +34,33 @@
         </form>
     </div>
 
-    <div>
-        <h2 class="h4 mb-3">Recently added users</h2>
+    <div class="mt-5">
+        <h2 class="h4 mb-3">Alphabetical directory</h2>
 
-        @if (Model.People.Count == 0)
+        @if (Model.AlphabeticalPeople.Count == 0)
         {
-            <p class="text-secondary mb-0">No users added yet. Add the first person to start the list.</p>
+            <p class="text-secondary mb-0">No users match your search.</p>
         }
         else
         {
-            <ul class="list-unstyled mb-0">
-                @foreach (var person in Model.People)
-                {
-                    <li class="py-3 border-bottom border-secondary-subtle d-flex flex-column flex-md-row justify-content-between gap-2">
-                        <a class="text-decoration-none text-white fw-semibold" asp-page="/People/Details" asp-route-id="@person.Id">@person.FirstName @person.LastName</a>
-                        <span class="text-secondary small">Added @person.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy")</span>
-                    </li>
-                }
-            </ul>
+            @foreach (var group in Model.AlphabeticalPeople.GroupBy(person =>
+                string.IsNullOrWhiteSpace(person.FirstName) ? "#" : person.FirstName[..1].ToUpperInvariant()))
+            {
+                <section class="alphabet-group mb-4">
+                    <h3 class="alphabet-heading h5 mb-2">@group.Key</h3>
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var person in group)
+                        {
+                            <li class="py-2 border-bottom border-secondary-subtle">
+                                <a class="text-decoration-none text-white" asp-page="/People/Details" asp-route-id="@person.Id">
+                                    @person.FirstName @person.LastName
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </section>
+            }
         }
     </div>
+</div>
 </div>

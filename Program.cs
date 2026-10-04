@@ -16,6 +16,33 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.EnsureCreated();
+
+    var hasDateOfBirth = db.Database
+        .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('People') WHERE name = 'DateOfBirth'")
+        .Single() > 0;
+
+    if (!hasDateOfBirth)
+    {
+        db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN DateOfBirth TEXT NULL");
+    }
+
+    var hasFunction = db.Database
+        .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('People') WHERE name = 'Function'")
+        .Single() > 0;
+
+    if (!hasFunction)
+    {
+        db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN Function TEXT NULL");
+    }
+
+    var hasAdditionalDetails = db.Database
+        .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('People') WHERE name = 'AdditionalDetailsJson'")
+        .Single() > 0;
+
+    if (!hasAdditionalDetails)
+    {
+        db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN AdditionalDetailsJson TEXT NULL");
+    }
 }
 
 var isRender = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("RENDER"));

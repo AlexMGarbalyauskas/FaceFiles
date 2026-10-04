@@ -125,4 +125,5 @@ C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\refint\FaceF
 C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\FaceFiles.pdb
 C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\FaceFiles.genruntimeconfig.cache
 C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\ref\FaceFiles.dll
-C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\compressed\bw6dhu1m1y-s1nxjrqk7l.gz
+C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\FaceFiles.sourcelink.json
+C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\compressed\bw6dhu1m1y-3jft96fzue.gz

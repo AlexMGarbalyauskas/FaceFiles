@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets\\images\\user_photos\\.gitkeep"
     },
     {
+      "Id": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\images\\user_photos\\bce009d08ac74378875c5d3f74bebde2.jpg",
+      "PackagePath": "staticwebassets\\images\\user_photos\\bce009d08ac74378875c5d3f74bebde2.jpg"
+    },
+    {
       "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.FaceFiles.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },

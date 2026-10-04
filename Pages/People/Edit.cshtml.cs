@@ -51,6 +51,8 @@ public class EditModel : PageModel
 
         personToUpdate.FirstName = Person.FirstName;
         personToUpdate.LastName = Person.LastName;
+        personToUpdate.DateOfBirth = Person.DateOfBirth;
+        personToUpdate.Function = Person.Function;
         personToUpdate.Details = Person.Details;
 
         if (PhotoUpload is not null && PhotoUpload.Length > 0)

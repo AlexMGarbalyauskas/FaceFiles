@@ -29,6 +29,12 @@
         </div>
 
         <div class="mb-3">
+            <label asp-for="Person.DateOfBirth" class="form-label">Date of birth</label>
+            <input asp-for="Person.DateOfBirth" class="form-control" />
+            <span asp-validation-for="Person.DateOfBirth" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
             <label asp-for="Person.Details" class="form-label">Details</label>
             <textarea asp-for="Person.Details" class="form-control" rows="4" placeholder="Add notes, role, or any useful details..."></textarea>
             <span asp-validation-for="Person.Details" class="text-danger small"></span>

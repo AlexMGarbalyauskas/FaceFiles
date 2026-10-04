@@ -16,7 +16,11 @@
 <body class="app-shell app-shell-launch">
     <main class="app-main app-main-launch">
         <div class="launch-screen d-flex align-items-center justify-content-center min-vh-100">
-            <div class="text-center px-3">
+            <video class="launch-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+                <source src="~/videos/background.mp4" type="video/mp4" />
+            </video>
+            <div class="launch-overlay" aria-hidden="true"></div>
+            <div class="launch-content text-center px-3">
                 <p class="text-uppercase text-secondary small letter-spaced mb-3">FaceFiles</p>
                 <h1 class="display-6 fw-bold mb-4">Start your records experience</h1>
                 <button type="button" class="btn btn-light btn-lg px-5 py-3 launch-button" id="launchButton">Open Face Files</button>

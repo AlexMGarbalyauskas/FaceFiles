@@ -2,6 +2,7 @@
 @model HomeModel
 @{
     ViewData["Title"] = "Home";
+    var selectedId = Model.SelectedFolderId;
 }
 
 <div class="home-page-background">
@@ -21,12 +22,42 @@
         <h1 class="h2 fw-semibold mb-2">People records in one place.</h1>
         <p class="mb-3 text-secondary">Search the names below, open a person, or add a new record.</p>
         <div class="d-flex flex-wrap gap-2">
-            <a class="btn btn-outline-light" asp-page="/People/Create">Add Person</a>
+            @* Add Person pre-ticks the folder you are currently viewing *@
+            <a class="btn btn-outline-light" asp-page="/People/Create" asp-route-folder="@selectedId">Add Person</a>
         </div>
+    </div>
+
+    @* ===== Folder bar: "All" is automatic, the rest are created by you ===== *@
+    <div class="mb-4">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <a class="btn btn-sm @(selectedId is null ? "btn-light" : "btn-outline-light")" asp-page="/Home">All people (@Model.TotalCount)</a>
+            @foreach (var folder in Model.Folders)
+            {
+                <a class="btn btn-sm @(selectedId == folder.Id ? "btn-light" : "btn-outline-light")" asp-page="/Home" asp-route-folder="@folder.Id">@folder.Name (@folder.PersonCount)</a>
+            }
+            <button type="button" class="add-detail-link ms-2" id="showFolderForm">+ New folder</button>
+        </div>
+
+        @* Posts to OnPostCreateFolderAsync; Enter saves *@
+        <form method="post" asp-page-handler="CreateFolder" class="add-detail-form d-none" id="folderForm">
+            <div class="input-group">
+                <input name="folderName" class="form-control" placeholder="Folder name (e.g. College), then press Enter" maxlength="100" aria-label="New folder name" />
+            </div>
+        </form>
+
+        @if (!string.IsNullOrEmpty(Model.FolderError))
+        {
+            <div class="text-warning small mt-2">@Model.FolderError</div>
+        }
     </div>
 
     <div class="mb-4">
         <form method="get" class="home-search-form-simple">
+            @* Keep the current folder when searching *@
+            @if (selectedId is not null)
+            {
+                <input type="hidden" name="folder" value="@selectedId" />
+            }
             <div class="input-group">
                 <input type="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="Search users..." aria-label="Search users" />
                 <button class="btn btn-light" type="submit">Search</button>
@@ -35,11 +66,34 @@
     </div>
 
     <div class="mt-5">
-        <h2 class="h4 mb-3">Alphabetical directory</h2>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+            <h2 class="h4 mb-0">@(Model.SelectedFolderName ?? "All people")</h2>
+
+            @* Delete is only allowed when the folder is empty (also enforced on the server) *@
+            @if (selectedId is not null)
+            {
+                <form method="post" asp-page-handler="DeleteFolder" onsubmit="return confirm('Delete this folder?');">
+                    <input type="hidden" name="folderId" value="@selectedId" />
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-danger"
+                            disabled="@(Model.SelectedFolderPersonCount > 0)"
+                            title="@(Model.SelectedFolderPersonCount > 0 ? "Only empty folders can be deleted" : "Delete this folder")">
+                        <i class="bi bi-trash3" aria-hidden="true"></i> Delete folder
+                    </button>
+                </form>
+            }
+        </div>
 
         @if (Model.AlphabeticalPeople.Count == 0)
         {
-            <p class="text-secondary mb-0">No users match your search.</p>
+            @if (selectedId is not null && string.IsNullOrWhiteSpace(Model.SearchTerm))
+            {
+                <p class="text-secondary mb-0">This folder is empty.</p>
+            }
+            else
+            {
+                <p class="text-secondary mb-0">No users match your search.</p>
+            }
         }
         else
         {
@@ -55,6 +109,11 @@
                                 <a class="text-decoration-none text-white" asp-page="/People/Details" asp-route-id="@person.Id">
                                     @person.FirstName @person.LastName
                                 </a>
+                                @* In the "All" view, show every folder the person is in *@
+                                @if (selectedId is null && Model.PersonFolderNames.TryGetValue(person.Id, out var personFolders))
+                                {
+                                    <span class="text-secondary small ms-2">@string.Join(", ", personFolders)</span>
+                                }
                             </li>
                         }
                     </ul>
@@ -64,3 +123,15 @@
     </div>
 </div>
 </div>
+</div>
+
+@section Scripts {
+    <script>
+        // "+ New folder": reveal the form and focus the input
+        document.getElementById('showFolderForm')?.addEventListener('click', () => {
+            document.getElementById('folderForm')?.classList.remove('d-none');
+            document.getElementById('showFolderForm')?.classList.add('d-none');
+            document.querySelector('#folderForm input[name="folderName"]')?.focus();
+        });
+    </script>
+}

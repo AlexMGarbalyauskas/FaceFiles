@@ -19,11 +19,25 @@ public class DetailsModel : PageModel
 
     public Person? Person { get; set; }
 
+    // All folders, for the folder checkboxes
+    public List<Folder> Folders { get; set; } = [];
+
+    // Ids of the folders this person is currently in
+    public List<int> MemberFolderIds { get; set; } = [];
+
+    // Ticked folders from the checkboxes (empty = remove from all folders)
+    [BindProperty]
+    public List<int> SelectedFolderIds { get; set; } = [];
+
     [BindProperty]
     public string? NewDetail { get; set; }
 
     [BindProperty]
     public string? NewSurname { get; set; }
+
+    // Bound from the Title edit form (input name="NewTitle")
+    [BindProperty]
+    public string? NewTitle { get; set; }
 
     [BindProperty]
     public DateTime? NewDateOfBirth { get; set; }
@@ -49,6 +63,47 @@ public class DetailsModel : PageModel
     public async Task OnGetAsync(int id)
     {
         Person = await _context.People.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
+
+        Folders = (await _context.Folders.AsNoTracking().ToListAsync())
+            .OrderBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        MemberFolderIds = await _context.PersonFolders
+            .AsNoTracking()
+            .Where(link => link.PersonId == id)
+            .Select(link => link.FolderId)
+            .ToListAsync();
+    }
+
+    // Saves the ticked folders: adds missing links, removes unticked ones.
+    // The person always stays in the "All people" list.
+    public async Task<IActionResult> OnPostUpdateFoldersAsync(int id)
+    {
+        var person = await FindPersonAsync(id);
+        if (person is null)
+        {
+            return NotFound();
+        }
+
+        // Only accept folders that exist
+        var validFolderIds = await _context.Folders
+            .Where(item => SelectedFolderIds.Contains(item.Id))
+            .Select(item => item.Id)
+            .ToListAsync();
+
+        var existingLinks = await _context.PersonFolders
+            .Where(link => link.PersonId == id)
+            .ToListAsync();
+
+        _context.PersonFolders.RemoveRange(existingLinks.Where(link => !validFolderIds.Contains(link.FolderId)));
+
+        foreach (var folderId in validFolderIds.Where(folderId => existingLinks.All(link => link.FolderId != folderId)))
+        {
+            _context.PersonFolders.Add(new PersonFolder { PersonId = id, FolderId = folderId });
+        }
+
+        await _context.SaveChangesAsync();
+        return RedirectToPage(new { id });
     }
 
     public async Task<IActionResult> OnPostAddDetailAsync(int id)
@@ -83,6 +138,21 @@ public class DetailsModel : PageModel
         return RedirectToPage(new { id });
     }
 
+    // Saves the title. An empty value clears it (stored as null).
+    public async Task<IActionResult> OnPostUpdateTitleAsync(int id)
+    {
+        var person = await FindPersonAsync(id);
+        if (person is null)
+        {
+            return NotFound();
+        }
+
+        var title = NewTitle?.Trim();
+        person.Title = string.IsNullOrWhiteSpace(title) ? null : title;
+        await _context.SaveChangesAsync();
+        return RedirectToPage(new { id });
+    }
+
     public async Task<IActionResult> OnPostUpdateDateOfBirthAsync(int id)
     {
         var person = await FindPersonAsync(id);
@@ -91,8 +161,13 @@ public class DetailsModel : PageModel
             return NotFound();
         }
 
-        person.DateOfBirth = NewDateOfBirth;
-        await _context.SaveChangesAsync();
+        // Ignore dates in the future; an empty value clears the date of birth
+        if (NewDateOfBirth is null || NewDateOfBirth.Value.Date <= DateTime.Today)
+        {
+            person.DateOfBirth = NewDateOfBirth;
+            await _context.SaveChangesAsync();
+        }
+
         return RedirectToPage(new { id });
     }
 
@@ -161,6 +236,10 @@ public class DetailsModel : PageModel
         {
             return NotFound();
         }
+
+        // Remove the person's folder links too, so no empty-folder checks are blocked by a deleted person
+        var links = await _context.PersonFolders.Where(link => link.PersonId == id).ToListAsync();
+        _context.PersonFolders.RemoveRange(links);
 
         PhotoStorage.DeletePhoto(_environment, person.PhotoPath);
         _context.People.Remove(person);

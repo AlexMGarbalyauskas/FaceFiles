@@ -38,6 +38,27 @@
                     <span asp-validation-for="Person.LastName" class="text-danger small"></span>
                 </div>
 
+                @* Folders (optional): tick as many as you like. They always appear in "All people" too. *@
+                <div class="create-field">
+                    <span class="detail-label">Folders</span>
+                    @if (Model.Folders.Count == 0)
+                    {
+                        <span class="text-secondary small">No folders yet. Create one on the Home page.</span>
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-wrap gap-3">
+                            @foreach (var folder in Model.Folders)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="SelectedFolderIds" value="@folder.Id" id="folder-@folder.Id" checked="@(Model.SelectedFolderIds.Contains(folder.Id))" />
+                                    <label class="form-check-label" for="folder-@folder.Id">@folder.Name</label>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
                 <div class="create-field">
                     <label asp-for="Person.DateOfBirth" class="detail-label">Date of Birth</label>
                     <input asp-for="Person.DateOfBirth" class="form-control" />

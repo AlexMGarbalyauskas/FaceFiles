@@ -35,6 +35,36 @@ using (var scope = app.Services.CreateScope())
         db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN Function TEXT NULL");
     }
 
+    // NEW: add the Title column to existing databases that were created before it existed
+    var hasTitle = db.Database
+        .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('People') WHERE name = 'Title'")
+        .Single() > 0;
+
+    if (!hasTitle)
+    {
+        db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN Title TEXT NULL");
+    }
+
+    // NEW: create the Folders table if it doesn't exist yet (EnsureCreated won't add tables to an existing database)
+    db.Database.ExecuteSqlRaw(
+        "CREATE TABLE IF NOT EXISTS Folders (Id INTEGER NOT NULL CONSTRAINT PK_Folders PRIMARY KEY AUTOINCREMENT, Name TEXT NOT NULL)");
+
+    // NEW: link table so a person can be in many folders
+    db.Database.ExecuteSqlRaw(
+        "CREATE TABLE IF NOT EXISTS PersonFolders (PersonId INTEGER NOT NULL, FolderId INTEGER NOT NULL, CONSTRAINT PK_PersonFolders PRIMARY KEY (PersonId, FolderId))");
+
+    // One-off: the earlier one-folder-per-person version stored a FolderId on People.
+    // Copy those into the link table, then clear the old column so it never runs twice.
+    var hasOldFolderId = db.Database
+        .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('People') WHERE name = 'FolderId'")
+        .Single() > 0;
+
+    if (hasOldFolderId)
+    {
+        db.Database.ExecuteSqlRaw("INSERT OR IGNORE INTO PersonFolders (PersonId, FolderId) SELECT Id, FolderId FROM People WHERE FolderId IS NOT NULL");
+        db.Database.ExecuteSqlRaw("UPDATE People SET FolderId = NULL WHERE FolderId IS NOT NULL");
+    }
+
     var hasAdditionalDetails = db.Database
         .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('People') WHERE name = 'AdditionalDetailsJson'")
         .Single() > 0;

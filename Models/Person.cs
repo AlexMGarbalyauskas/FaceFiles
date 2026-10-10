@@ -14,6 +14,10 @@ public class Person
     [StringLength(100)]
     public string? LastName { get; set; }
 
+    // NEW: a person's title (e.g. "Dr", "Manager"). Nullable so existing rows stay valid.
+    [StringLength(100)]
+    public string? Title { get; set; }
+
     [Display(Name = "Date of Birth")]
     [DataType(DataType.Date)]
     public DateTime? DateOfBirth { get; set; }

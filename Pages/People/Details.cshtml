@@ -4,18 +4,21 @@
     ViewData["Title"] = "Person Details";
 }
 
+@* Guard: show a message if no person matches the id *@
 @if (Model.Person is null)
 {
     <div class="alert alert-warning">Person not found.</div>
 }
 else
 {
+    // Display name, and initials used as a photo placeholder
     var fullName = $"{Model.Person.FirstName} {Model.Person.LastName}".Trim();
     var initials = string.Concat(
         string.IsNullOrWhiteSpace(Model.Person.FirstName) ? string.Empty : Model.Person.FirstName[..1],
         string.IsNullOrWhiteSpace(Model.Person.LastName) ? string.Empty : Model.Person.LastName[..1]).ToUpperInvariant();
 
     <div class="detail-page-shell">
+        @* Looping background video + dark overlay behind the content *@
         <video class="detail-background-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
             <source src="~/videos/background.mp4" type="video/mp4" />
         </video>
@@ -26,10 +29,12 @@ else
         </div>
 
         <div class="detail-card">
+        @* Opens the delete confirmation modal (script at the bottom) *@
         <button type="button" class="detail-delete-button" id="showDeleteModal" title="Delete person" aria-label="Delete person">
             <i class="bi bi-trash3" aria-hidden="true"></i>
         </button>
 
+        @* ===== Header: photo (or initials fallback) + name ===== *@
         <div class="detail-header">
             <div class="detail-photo-wrap" id="photoHolder">
                 @if (string.IsNullOrWhiteSpace(Model.Person.PhotoPath))
@@ -38,9 +43,12 @@ else
                 }
                 else
                 {
+                    @* If the image fails to load, hide it and show the initials placeholder instead *@
                     <img class="detail-photo" src="@Model.Person.PhotoPath" alt="@fullName" onerror="this.classList.add('d-none'); this.nextElementSibling.classList.remove('d-none');" />
                     <div class="detail-photo-placeholder d-none" aria-label="No photo">@initials</div>
                 }
+                @* Hidden upload form: right-click photo -> "Add photo" -> file picker -> auto-submit.
+                   Posts to OnPostAddPhotoAsync *@
                 <form method="post" enctype="multipart/form-data" asp-page-handler="AddPhoto" id="photoForm" class="d-none">
                     <input type="file" id="photoUpload" name="PhotoUpload" accept="image/*" />
                 </form>
@@ -54,6 +62,56 @@ else
         <div class="detail-divider"></div>
 
         <div class="detail-fields">
+            @* ===== Title (NEW): view/edit pattern. Posts to OnPostUpdateTitleAsync ===== *@
+            <div class="detail-field">
+                <span class="detail-label">Title</span>
+                <div class="editable-view">
+                    <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Person.Title) ? "Not provided" : Model.Person.Title)</span>
+                    <button type="button" class="detail-edit-trigger" data-edit-target="titleForm" title="Edit title" aria-label="Edit title">
+                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <form method="post" asp-page-handler="UpdateTitle" class="inline-edit-form d-none" id="titleForm">
+                    <div class="input-group">
+                        <input name="NewTitle" class="form-control" value="@Model.Person.Title" placeholder="Title (e.g. Dr, Manager)" maxlength="100" aria-label="Edit title and press Enter to confirm" />
+                    </div>
+                </form>
+            </div>
+
+            @* ===== Folders: tick as many as you like, then save. Posts to OnPostUpdateFoldersAsync.
+               Unticking everything removes the person from all folders; they always stay in "All people". ===== *@
+            <div class="detail-field">
+                <span class="detail-label">Folders</span>
+                <div class="editable-view">
+                    <span class="detail-value">@(Model.Folders.Any(item => Model.MemberFolderIds.Contains(item.Id))
+                        ? string.Join(", ", Model.Folders.Where(item => Model.MemberFolderIds.Contains(item.Id)).Select(item => item.Name))
+                        : "No folders")</span>
+                    <button type="button" class="detail-edit-trigger" data-edit-target="folderForm" title="Change folders" aria-label="Change folders">
+                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <form method="post" asp-page-handler="UpdateFolders" class="inline-edit-form d-none" id="folderForm">
+                    @if (Model.Folders.Count == 0)
+                    {
+                        <span class="text-secondary small">No folders yet. Create one on the Home page.</span>
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-wrap gap-3 mb-2">
+                            @foreach (var folder in Model.Folders)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="SelectedFolderIds" value="@folder.Id" id="folder-@folder.Id" checked="@(Model.MemberFolderIds.Contains(folder.Id))" />
+                                    <label class="form-check-label" for="folder-@folder.Id">@folder.Name</label>
+                                </div>
+                            }
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-outline-light">Save folders</button>
+                    }
+                </form>
+            </div>
+
+            @* ===== Surname: view/edit pattern. Posts to OnPostUpdateSurnameAsync ===== *@
             <div class="detail-field">
                 <span class="detail-label">Surname</span>
                 <div class="editable-view">
@@ -68,6 +126,10 @@ else
                     </div>
                 </form>
             </div>
+
+            @* ===== Date of birth: view/edit pattern. Posts to OnPostUpdateDateOfBirthAsync =====
+               FIX: a date input has no reliable Enter-to-submit, so this form now has an explicit
+               Save button (a real submit button) plus a keydown handler in the script below. *@
             <div class="detail-field">
                 <span class="detail-label">Date of Birth</span>
                 <div class="editable-view">
@@ -78,12 +140,16 @@ else
                 </div>
                 <form method="post" asp-page-handler="UpdateDateOfBirth" class="inline-edit-form d-none" id="dateOfBirthForm">
                     <div class="input-group">
-                        <input type="date" name="NewDateOfBirth" class="form-control" value="@(Model.Person.DateOfBirth?.ToString("yyyy-MM-dd"))" aria-label="Edit date of birth and press Enter to confirm" />
+                        <input type="date" name="NewDateOfBirth" class="form-control" value="@(Model.Person.DateOfBirth?.ToString("yyyy-MM-dd"))" max="@DateTime.Today.ToString("yyyy-MM-dd")" aria-label="Edit date of birth and press Enter or Save to confirm" />
+                        <button type="submit" class="btn btn-outline-light" title="Save date of birth" aria-label="Save date of birth">
+                            <i class="bi bi-check-lg" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
 
+        @* ===== Bio: click text to swap for a textarea. Posts to OnPostUpdateBioAsync ===== *@
         <div class="detail-bio">
             <h2 class="detail-label">Bio</h2>
             <div class="bio-display editable-view" data-edit-target="bioForm" role="button" tabindex="0">
@@ -94,6 +160,7 @@ else
             </form>
         </div>
 
+        @* ===== Additional details: one edit form per list item ===== *@
         <div class="detail-additional">
             <h2 class="detail-label">Additional details</h2>
             @if (Model.Person.AdditionalDetails.Count > 0)
@@ -112,6 +179,7 @@ else
                                 </button>
                             </div>
                             <form method="post" asp-page-handler="UpdateDetail" class="inline-edit-form d-none" id="@detailFormId">
+                                @* Tells the server which list item to update *@
                                 <input type="hidden" name="DetailIndex" value="@detailIndex" />
                                 <div class="input-group">
                                     <input name="EditedDetail" class="form-control" value="@detail" aria-label="Edit detail and press Enter to confirm" />
@@ -131,6 +199,7 @@ else
             </form>
         </div>
 
+        @* ===== Social links: open in new tab; add form submits on Enter in the URL field ===== *@
         <div class="detail-social">
             <h2 class="detail-label">Social media</h2>
             @if (Model.Person.SocialLinks.Count > 0)
@@ -158,6 +227,7 @@ else
         </div>
         </div>
 
+        @* ===== Delete confirmation modal. Posts to OnPostDeletePersonAsync ===== *@
         <div class="delete-modal d-none" id="deleteModal" role="dialog" aria-modal="false" aria-labelledby="deleteModalTitle">
             <div class="delete-confirmation">
                 <div class="delete-icon" aria-hidden="true">
@@ -178,15 +248,18 @@ else
 
 @section Scripts {
     <script>
+        // Generic edit toggle: any element with data-edit-target hides its view
+        // and shows the form whose id matches the attribute value.
         document.querySelectorAll('[data-edit-target]').forEach((button) => {
             button.addEventListener('click', () => {
                 const form = document.getElementById(button.dataset.editTarget);
                 form?.classList.remove('d-none');
                 button.closest('.editable-view')?.classList.add('d-none');
-                form?.querySelector('input, textarea')?.focus();
+                form?.querySelector('input, textarea, select')?.focus();
             });
         });
 
+        // Bio: Enter submits, Shift+Enter inserts a newline
         document.querySelector('textarea[name="NewBio"]')?.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
@@ -194,18 +267,30 @@ else
             }
         });
 
+        // Date of birth (FIX): date inputs don't reliably submit on Enter, so submit explicitly.
+        // requestSubmit() is used (instead of submit()) so the browser validates the date first.
+        document.querySelector('input[name="NewDateOfBirth"]')?.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                event.currentTarget.form.requestSubmit();
+            }
+        });
+
+        // Add detail: reveal the form and focus the input
         document.getElementById('showDetailForm')?.addEventListener('click', () => {
             document.getElementById('detailForm')?.classList.remove('d-none');
             document.getElementById('showDetailForm')?.classList.add('d-none');
             document.getElementById('newDetail')?.focus();
         });
 
+        // Add social link: reveal the form and focus the platform input
         document.getElementById('showSocialForm')?.addEventListener('click', () => {
             document.getElementById('socialForm')?.classList.remove('d-none');
             document.getElementById('showSocialForm')?.classList.add('d-none');
             document.querySelector('input[name="NewSocialPlatform"]')?.focus();
         });
 
+        // Social link: Enter in the URL field submits the form
         document.querySelector('input[name="NewSocialUrl"]')?.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -213,6 +298,7 @@ else
             }
         });
 
+        // Photo: right-click shows a small menu at the cursor; choosing a file auto-submits
         const photoHolder = document.getElementById('photoHolder');
         const photoMenu = document.getElementById('photoContextMenu');
         const photoForm = document.getElementById('photoForm');
@@ -236,9 +322,11 @@ else
             }
         });
 
+        // Clicking anywhere else closes the photo menu
         document.addEventListener('click', () => photoMenu?.classList.add('d-none'));
         photoMenu?.addEventListener('click', (event) => event.stopPropagation());
 
+        // Delete modal: open, cancel, or click the backdrop to close
         const deleteModal = document.getElementById('deleteModal');
         document.getElementById('showDeleteModal')?.addEventListener('click', () => {
             deleteModal?.classList.remove('d-none');

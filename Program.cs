@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
+builder.Services.AddHttpClient();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -81,6 +82,33 @@ using (var scope = app.Services.CreateScope())
     if (!hasSocialLinks)
     {
         db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN SocialLinksJson TEXT NULL");
+    }
+
+    var hasEmail = db.Database
+        .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('People') WHERE name = 'Email'")
+        .Single() > 0;
+
+    if (!hasEmail)
+    {
+        db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN Email TEXT NULL");
+    }
+
+    var hasPhoneNumber = db.Database
+        .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('People') WHERE name = 'PhoneNumber'")
+        .Single() > 0;
+
+    if (!hasPhoneNumber)
+    {
+        db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN PhoneNumber TEXT NULL");
+    }
+
+    var hasPersonalityEvaluation = db.Database
+        .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('People') WHERE name = 'PersonalityEvaluation'")
+        .Single() > 0;
+
+    if (!hasPersonalityEvaluation)
+    {
+        db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN PersonalityEvaluation TEXT NULL");
     }
 }
 

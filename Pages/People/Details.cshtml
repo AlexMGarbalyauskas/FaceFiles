@@ -56,7 +56,14 @@ else
                     <button type="button" id="addPhotoButton">Add photo</button>
                 </div>
             </div>
-            <h1 class="detail-name">@fullName</h1>
+            <div class="detail-identity">
+                <p class="detail-eyebrow">PERSON PROFILE</p>
+                <h1 class="detail-name">@fullName</h1>
+                @if (!string.IsNullOrWhiteSpace(Model.Person.Title))
+                {
+                    <p class="detail-role">@Model.Person.Title</p>
+                }
+            </div>
         </div>
 
         <div class="detail-divider"></div>
@@ -147,6 +154,61 @@ else
                     </div>
                 </form>
             </div>
+
+            <div class="detail-contact-panel">
+                <div class="detail-section-heading">
+                    <div>
+                        <p class="detail-eyebrow">DIRECT CONTACT</p>
+                        <h2 class="detail-label">Contact information</h2>
+                    </div>
+                    <button type="button" class="detail-edit-trigger" data-edit-target="contactForm" title="Edit contact information" aria-label="Edit contact information">
+                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="contact-grid editable-view" data-edit-view="contactForm">
+                    <div class="contact-item">
+                        <i class="bi bi-envelope" aria-hidden="true"></i>
+                        <div>
+                            <span class="contact-label">Email</span>
+                            @if (string.IsNullOrWhiteSpace(Model.Person.Email))
+                            {
+                                <span class="detail-value">Not provided</span>
+                            }
+                            else
+                            {
+                                <a class="contact-value" href="mailto:@Model.Person.Email">@Model.Person.Email</a>
+                            }
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-telephone" aria-hidden="true"></i>
+                        <div>
+                            <span class="contact-label">Phone</span>
+                            @if (string.IsNullOrWhiteSpace(Model.Person.PhoneNumber))
+                            {
+                                <span class="detail-value">Not provided</span>
+                            }
+                            else
+                            {
+                                <a class="contact-value" href="tel:@Model.Person.PhoneNumber">@Model.Person.PhoneNumber</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <form method="post" asp-page-handler="UpdateContact" class="inline-edit-form d-none" id="contactForm">
+                    <div class="contact-edit-grid">
+                        <div>
+                            <label class="form-label" for="newEmail">Email</label>
+                            <input id="newEmail" name="NewEmail" type="email" class="form-control" value="@Model.Person.Email" placeholder="name@example.com" maxlength="254" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="newPhoneNumber">Phone number</label>
+                            <input id="newPhoneNumber" name="NewPhoneNumber" type="tel" class="form-control" value="@Model.Person.PhoneNumber" placeholder="+1 555 123 4567" maxlength="50" />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-outline-light mt-3">Save contact information</button>
+                </form>
+            </div>
         </div>
 
         @* ===== Bio: click text to swap for a textarea. Posts to OnPostUpdateBioAsync ===== *@
@@ -156,7 +218,31 @@ else
                 <span class="detail-text">@(string.IsNullOrWhiteSpace(Model.Person.Details) ? "No bio entered." : Model.Person.Details)</span>
             </div>
             <form method="post" asp-page-handler="UpdateBio" class="inline-edit-form d-none" id="bioForm">
-                <textarea name="NewBio" class="form-control" rows="4" placeholder="Write a bio">@Model.Person.Details</textarea>
+                <textarea name="NewBio" class="form-control" rows="4" placeholder="Write a bio" aria-label="Bio. Press Enter to save or Shift and Enter for a new line">@Model.Person.Details</textarea>
+                <button type="submit" class="btn btn-sm btn-outline-light mt-2">Save bio</button>
+            </form>
+        </div>
+
+        @* ===== Personality evaluation: Enter saves; Shift+Enter creates a new line ===== *@
+        <div class="detail-personality">
+            <div class="detail-section-heading">
+                <div>
+                    <p class="detail-eyebrow">OBSERVATION</p>
+                    <h2 class="detail-label">Personality evaluation</h2>
+                </div>
+            </div>
+            <div class="bio-display editable-view" data-edit-target="personalityForm" role="button" tabindex="0">
+                <span class="detail-text">@(string.IsNullOrWhiteSpace(Model.Person.PersonalityEvaluation) ? "No personality evaluation entered." : Model.Person.PersonalityEvaluation)</span>
+                <button type="button" class="detail-edit-trigger" title="Edit personality evaluation" aria-label="Edit personality evaluation">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                </button>
+            </div>
+            <form method="post" asp-page-handler="UpdatePersonality" class="inline-edit-form d-none" id="personalityForm">
+                <textarea name="NewPersonalityEvaluation" class="form-control" rows="5" maxlength="2000" placeholder="Write an objective evaluation..." aria-label="Personality evaluation. Press Enter to save or Shift and Enter for a new line">@Model.Person.PersonalityEvaluation</textarea>
+                <div class="d-flex align-items-center gap-2 mt-2">
+                    <button type="submit" class="btn btn-sm btn-outline-light">Save evaluation</button>
+                    <span class="text-secondary small">Enter saves; Shift+Enter adds a new line.</span>
+                </div>
             </form>
         </div>
 
@@ -199,7 +285,7 @@ else
             </form>
         </div>
 
-        @* ===== Social links: open in new tab; add form submits on Enter in the URL field ===== *@
+        @* ===== Social links: show an embedded preview where the platform allows iframe embedding ===== *@
         <div class="detail-social">
             <h2 class="detail-label">Social media</h2>
             @if (Model.Person.SocialLinks.Count > 0)
@@ -207,10 +293,44 @@ else
                 <div class="social-link-list">
                     @foreach (var socialLink in Model.Person.SocialLinks)
                     {
-                        <a class="social-link" href="@socialLink.Url" target="_blank" rel="noopener noreferrer">
-                            <i class="bi bi-link-45deg" aria-hidden="true"></i>
-                            <span>@socialLink.Platform</span>
-                        </a>
+                        <article class="social-card">
+                            <div class="social-card-header">
+                                <span class="social-link">
+                                    <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                                    <span>@socialLink.Platform</span>
+                                </span>
+                                <a class="social-open-link" href="@socialLink.Url" target="_blank" rel="noopener noreferrer">
+                                    Open
+                                </a>
+                            </div>
+                            @if (socialLink.Platform.Contains("facebook", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <iframe class="social-embed social-embed-facebook"
+                                        src="https://www.facebook.com/plugins/page.php?href=@Uri.EscapeDataString(socialLink.Url)&tabs=timeline&width=500&height=500"
+                                        title="@socialLink.Platform preview"
+                                        loading="lazy"
+                                        referrerpolicy="no-referrer"
+                                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                            }
+                            else if (socialLink.Platform.Contains("twitter", StringComparison.OrdinalIgnoreCase)
+                                || socialLink.Platform.Equals("x", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <div class="social-official-widget">
+                                    <a class="twitter-timeline"
+                                       data-height="360"
+                                       href="@socialLink.Url">View @socialLink.Platform</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="social-profile-fallback">
+                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                                    <strong>@socialLink.Platform profile</strong>
+                                    <span>This platform does not allow profile previews inside other websites.</span>
+                                    <a href="@socialLink.Url" target="_blank" rel="noopener noreferrer">View profile on @socialLink.Platform</a>
+                                </div>
+                            }
+                        </article>
                     }
                 </div>
             }
@@ -218,11 +338,44 @@ else
             <button type="button" class="add-detail-link" id="showSocialForm">+ Add social link</button>
             <form method="post" asp-page-handler="AddSocialLink" class="add-social-form d-none" id="socialForm">
                 <div class="social-inputs">
-                    <input name="NewSocialPlatform" class="form-control" placeholder="Facebook, Instagram..." aria-label="Social platform" />
-                    <input name="NewSocialUrl" type="url" class="form-control" placeholder="https://..." aria-label="Social media URL" />
+                    <input name="NewSocialPlatform" class="form-control" placeholder="Facebook, Instagram..." aria-label="Social platform" required />
+                    <input name="NewSocialUrl" type="url" class="form-control" placeholder="https://..." aria-label="Social media URL" required />
                 </div>
+                <button type="submit" class="btn btn-sm btn-outline-light mt-2">Save link</button>
             </form>
         </div>
+
+        <button type="button" class="ai-assistant-toggle" id="aiAssistantToggle" aria-controls="aiAssistantPanel" aria-expanded="false">
+            <i class="bi bi-stars" aria-hidden="true"></i>
+            <span>AI assistant</span>
+        </button>
+
+        <aside class="ai-assistant-panel" id="aiAssistantPanel" aria-label="AI profile assistant" aria-hidden="true">
+            <div class="ai-assistant-header">
+                <div>
+                    <p class="detail-eyebrow">PROFILE ANALYSIS</p>
+                    <h2>AI assistant</h2>
+                </div>
+                <button type="button" class="ai-assistant-close" id="aiAssistantClose" aria-label="Close AI assistant">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="ai-assistant-messages" id="aiAssistantMessages">
+                <div class="ai-message ai-message-assistant ai-message-welcome">
+                    <i class="bi bi-stars ai-welcome-icon" aria-hidden="true"></i>
+                    <span>Ask about key traits, communication style, or a balanced profile summary.</span>
+                </div>
+            </div>
+            <form class="ai-assistant-form" id="aiAssistantForm">
+                @Html.AntiForgeryToken()
+                <textarea id="aiAssistantInput" name="message" rows="2" maxlength="2000" placeholder="Ask about this person..." aria-label="Ask the AI assistant"></textarea>
+                <button type="submit" class="btn btn-light" id="aiAssistantSend">
+                    <i class="bi bi-send" aria-hidden="true"></i>
+                    Send
+                </button>
+                <p class="ai-assistant-status text-secondary small" id="aiAssistantStatus"></p>
+            </form>
+        </aside>
 
         </div>
         </div>
@@ -254,17 +407,97 @@ else
             button.addEventListener('click', () => {
                 const form = document.getElementById(button.dataset.editTarget);
                 form?.classList.remove('d-none');
-                button.closest('.editable-view')?.classList.add('d-none');
+                (button.closest('.editable-view')
+                    ?? document.querySelector(`[data-edit-view="${button.dataset.editTarget}"]`))?.classList.add('d-none');
                 form?.querySelector('input, textarea, select')?.focus();
             });
         });
 
-        // Bio: Enter submits, Shift+Enter inserts a newline
-        document.querySelector('textarea[name="NewBio"]')?.addEventListener('keydown', (event) => {
+        const aiToggle = document.getElementById('aiAssistantToggle');
+        const aiPanel = document.getElementById('aiAssistantPanel');
+        const aiClose = document.getElementById('aiAssistantClose');
+        const aiForm = document.getElementById('aiAssistantForm');
+        const aiInput = document.getElementById('aiAssistantInput');
+        const aiMessages = document.getElementById('aiAssistantMessages');
+        const aiStatus = document.getElementById('aiAssistantStatus');
+        const aiSend = document.getElementById('aiAssistantSend');
+        const aiHistory = [];
+
+        const setAiPanelOpen = (isOpen) => {
+            aiPanel?.classList.toggle('is-open', isOpen);
+            aiPanel?.setAttribute('aria-hidden', (!isOpen).toString());
+            aiToggle?.setAttribute('aria-expanded', isOpen.toString());
+            if (isOpen) {
+                aiInput?.focus();
+            }
+        };
+
+        aiToggle?.addEventListener('click', () => setAiPanelOpen(true));
+        aiClose?.addEventListener('click', () => setAiPanelOpen(false));
+
+        const addAiMessage = (content, role) => {
+            const message = document.createElement('div');
+            message.className = `ai-message ai-message-${role}`;
+            message.textContent = content;
+            aiMessages?.appendChild(message);
+            aiMessages?.scrollTo({ top: aiMessages.scrollHeight, behavior: 'smooth' });
+        };
+
+        aiInput?.addEventListener('keydown', event => {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
-                event.currentTarget.form.submit();
+                aiForm?.requestSubmit();
             }
+        });
+
+        aiForm?.addEventListener('submit', async event => {
+            event.preventDefault();
+            const message = aiInput.value.trim();
+            if (!message || aiSend.disabled) {
+                return;
+            }
+
+            addAiMessage(message, 'user');
+            aiHistory.push({ role: 'user', content: message });
+            aiInput.value = '';
+            aiSend.disabled = true;
+            aiStatus.textContent = 'Analyzing profile...';
+
+            try {
+                const body = new URLSearchParams({
+                    message,
+                    history: JSON.stringify(aiHistory.slice(-12)),
+                    __RequestVerificationToken: aiForm.querySelector('input[name="__RequestVerificationToken"]').value
+                });
+                const response = await fetch('?handler=Chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                    body
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.detail || result.error || 'The assistant could not answer.');
+                }
+
+                addAiMessage(result.answer, 'assistant');
+                aiHistory.push({ role: 'assistant', content: result.answer });
+                aiStatus.textContent = '';
+            } catch (error) {
+                aiStatus.textContent = error.message;
+            } finally {
+                aiSend.disabled = false;
+                aiInput.focus();
+            }
+        });
+
+        // Text evaluations: Enter submits, Shift+Enter inserts a newline.
+        document.querySelectorAll('textarea[name="NewBio"], textarea[name="NewPersonalityEvaluation"]').forEach(textarea => {
+            textarea.addEventListener('keydown', event => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    event.currentTarget.form.requestSubmit();
+                }
+            });
         });
 
         // Date of birth (FIX): date inputs don't reliably submit on Enter, so submit explicitly.
@@ -290,13 +523,23 @@ else
             document.querySelector('input[name="NewSocialPlatform"]')?.focus();
         });
 
-        // Social link: Enter in the URL field submits the form
-        document.querySelector('input[name="NewSocialUrl"]')?.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                event.currentTarget.form.submit();
-            }
+        // Social link: Enter in either field submits after native validation.
+        const socialForm = document.getElementById('socialForm');
+        socialForm?.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keydown', event => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    socialForm.requestSubmit();
+                }
+            });
         });
+
+        if (document.querySelector('.twitter-timeline')) {
+            const twitterScript = document.createElement('script');
+            twitterScript.src = 'https://platform.twitter.com/widgets.js';
+            twitterScript.async = true;
+            document.body.appendChild(twitterScript);
+        }
 
         // Photo: right-click shows a small menu at the cursor; choosing a file auto-submits
         const photoHolder = document.getElementById('photoHolder');

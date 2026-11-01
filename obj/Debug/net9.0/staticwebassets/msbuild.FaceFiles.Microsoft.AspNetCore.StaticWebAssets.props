@@ -12,11 +12,29 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>j6n5upvih9</Fingerprint>
-      <Integrity>Zal4BbiakBuYkWbF78GIRKoPnPmCBpNOTHucBINzrkc=</Integrity>
+      <Fingerprint>emz7jy3nu0</Fingerprint>
+      <Integrity>Flvp2Cqi4ahMPdS+aTOOJxEPIdH5Ff3Rqqj1PFzuXJQ=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\folder.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>FaceFiles</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/FaceFiles</BasePath>
+      <RelativePath>images/folder.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>e92co18iee</Fingerprint>
+      <Integrity>jq22MWWRuh6h3ya6fhFcfn5Hw9+hqMSa8M01yXxoT9w=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\folder.png'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\.gitkeep'))">
       <SourceType>Package</SourceType>
@@ -36,6 +54,42 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\.gitkeep'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\0eaf94093a1a4aba8b96961ab9759b95.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>FaceFiles</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/FaceFiles</BasePath>
+      <RelativePath>images/user_photos/0eaf94093a1a4aba8b96961ab9759b95.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>jd02awv4qi</Fingerprint>
+      <Integrity>mdf7clgNrV63HAL2s6DOpy9Jzzfzbt9tBocinVUMyVc=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\0eaf94093a1a4aba8b96961ab9759b95.png'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\3f040775c2494afc9fa3dd63fddf480a.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>FaceFiles</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/FaceFiles</BasePath>
+      <RelativePath>images/user_photos/3f040775c2494afc9fa3dd63fddf480a.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>i123ny48dj</Fingerprint>
+      <Integrity>FqxAWISVdZUchHUWNampvzJdPr3SY7eE/0bDK8CC6go=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\3f040775c2494afc9fa3dd63fddf480a.png'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\411e5e3317b7449f8c40f98f9b0a791e.png'))">
       <SourceType>Package</SourceType>
       <SourceId>FaceFiles</SourceId>
@@ -53,6 +107,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\411e5e3317b7449f8c40f98f9b0a791e.png'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\98eb474517ff4e07966906a412ddbe14.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>FaceFiles</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/FaceFiles</BasePath>
+      <RelativePath>images/user_photos/98eb474517ff4e07966906a412ddbe14.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>uwufxadwyh</Fingerprint>
+      <Integrity>PkPl358FgrIqIMO39TYSES/ANM8h5CCn322uzBIX8Is=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\user_photos\98eb474517ff4e07966906a412ddbe14.png'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\videos\background.mp4'))">
       <SourceType>Package</SourceType>

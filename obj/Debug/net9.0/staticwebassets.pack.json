@@ -5,12 +5,28 @@
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
+      "Id": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\images\\folder.png",
+      "PackagePath": "staticwebassets\\images\\folder.png"
+    },
+    {
       "Id": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\images\\user_photos\\.gitkeep",
       "PackagePath": "staticwebassets\\images\\user_photos\\.gitkeep"
     },
     {
+      "Id": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\images\\user_photos\\0eaf94093a1a4aba8b96961ab9759b95.png",
+      "PackagePath": "staticwebassets\\images\\user_photos\\0eaf94093a1a4aba8b96961ab9759b95.png"
+    },
+    {
+      "Id": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\images\\user_photos\\3f040775c2494afc9fa3dd63fddf480a.png",
+      "PackagePath": "staticwebassets\\images\\user_photos\\3f040775c2494afc9fa3dd63fddf480a.png"
+    },
+    {
       "Id": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\images\\user_photos\\411e5e3317b7449f8c40f98f9b0a791e.png",
       "PackagePath": "staticwebassets\\images\\user_photos\\411e5e3317b7449f8c40f98f9b0a791e.png"
+    },
+    {
+      "Id": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\images\\user_photos\\98eb474517ff4e07966906a412ddbe14.png",
+      "PackagePath": "staticwebassets\\images\\user_photos\\98eb474517ff4e07966906a412ddbe14.png"
     },
     {
       "Id": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\videos\\background.mp4",

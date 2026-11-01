@@ -29,13 +29,23 @@
 
     @* ===== Folder bar: "All" is automatic, the rest are created by you ===== *@
     <div class="mb-4">
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <a class="btn btn-sm @(selectedId is null ? "btn-light" : "btn-outline-light")" asp-page="/Home">All people (@Model.TotalCount)</a>
+        @* Grid: 4 folders per row on tablets/desktops (2 on phones); extra folders stack on new rows.
+           Long names are cut off with "..." (hover to see the full name). *@
+        @* Grid is half the page width on big screens; on narrow screens it never gets smaller than 420px (or the full width) *@
+        <div class="row row-cols-2 row-cols-md-4 g-2" style="width: 50%; min-width: min(100%, 420px);">
+            <div class="col">
+                <a class="btn btn-sm w-100 text-truncate @(selectedId is null ? "btn-light" : "btn-outline-light")" asp-page="/Home" title="All people">All people (@Model.TotalCount)</a>
+            </div>
             @foreach (var folder in Model.Folders)
             {
-                <a class="btn btn-sm @(selectedId == folder.Id ? "btn-light" : "btn-outline-light")" asp-page="/Home" asp-route-folder="@folder.Id">@folder.Name (@folder.PersonCount)</a>
+                <div class="col">
+                    <a class="btn btn-sm w-100 text-truncate @(selectedId == folder.Id ? "btn-light" : "btn-outline-light")" asp-page="/Home" asp-route-folder="@folder.Id" title="@folder.Name">@folder.Name (@folder.PersonCount)</a>
+                </div>
             }
-            <button type="button" class="add-detail-link ms-2" id="showFolderForm">+ New folder</button>
+        </div>
+
+        <div class="mt-2">
+            <button type="button" class="add-detail-link" id="showFolderForm">+ New folder</button>
         </div>
 
         @* Posts to OnPostCreateFolderAsync; Enter saves *@
@@ -52,14 +62,9 @@
     </div>
 
     <div class="mb-4">
-        <form method="get" class="home-search-form-simple">
-            @* Keep the current folder when searching *@
-            @if (selectedId is not null)
-            {
-                <input type="hidden" name="folder" value="@selectedId" />
-            }
+        <form class="home-search-form-simple" id="homeSearchForm">
             <div class="input-group">
-                <input type="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="Search users..." aria-label="Search users" />
+                <input type="search" name="search" value="@Model.SearchTerm" class="form-control" id="homeSearchInput" placeholder="Search users..." aria-label="Search users" />
                 <button class="btn btn-light" type="submit">Search</button>
             </div>
         </form>
@@ -86,26 +91,19 @@
 
         @if (Model.AlphabeticalPeople.Count == 0)
         {
-            @if (selectedId is not null && string.IsNullOrWhiteSpace(Model.SearchTerm))
-            {
-                <p class="text-secondary mb-0">This folder is empty.</p>
-            }
-            else
-            {
-                <p class="text-secondary mb-0">No users match your search.</p>
-            }
+            <p class="text-secondary mb-0">@(selectedId is not null ? "This folder is empty." : "No users found.")</p>
         }
         else
         {
             @foreach (var group in Model.AlphabeticalPeople.GroupBy(person =>
                 string.IsNullOrWhiteSpace(person.FirstName) ? "#" : person.FirstName[..1].ToUpperInvariant()))
             {
-                <section class="alphabet-group mb-4">
+                <section class="alphabet-group mb-4" data-search-group>
                     <h3 class="alphabet-heading h5 mb-2">@group.Key</h3>
                     <ul class="list-unstyled home-directory-list mb-0">
                         @foreach (var person in group)
                         {
-                            <li class="home-directory-row py-2">
+                            <li class="home-directory-row py-2" data-search-person="@($"{person.FirstName} {person.LastName}")">
                                 <a class="text-decoration-none text-white" asp-page="/People/Details" asp-route-id="@person.Id">
                                     @person.FirstName @person.LastName
                                 </a>
@@ -119,6 +117,7 @@
                     </ul>
                 </section>
             }
+            <p class="text-secondary mb-0 d-none" id="noSearchResults">No users match your search.</p>
         }
     </div>
 </div>
@@ -133,5 +132,30 @@
             document.getElementById('showFolderForm')?.classList.add('d-none');
             document.querySelector('#folderForm input[name="folderName"]')?.focus();
         });
+
+        const searchInput = document.getElementById('homeSearchInput');
+        const searchForm = document.getElementById('homeSearchForm');
+        const searchPeople = () => {
+            const term = searchInput?.value.trim().toLocaleLowerCase() ?? '';
+            const groups = document.querySelectorAll('[data-search-group]');
+            let visiblePeople = 0;
+
+            groups.forEach(group => {
+                let visibleInGroup = 0;
+                group.querySelectorAll('[data-search-person]').forEach(person => {
+                    const matches = person.dataset.searchPerson?.toLocaleLowerCase().includes(term) ?? false;
+                    person.classList.toggle('d-none', !matches);
+                    visibleInGroup += matches ? 1 : 0;
+                });
+                group.classList.toggle('d-none', visibleInGroup === 0);
+                visiblePeople += visibleInGroup;
+            });
+
+            document.getElementById('noSearchResults')?.classList.toggle('d-none', visiblePeople > 0);
+        };
+
+        searchInput?.addEventListener('input', searchPeople);
+        searchForm?.addEventListener('submit', event => event.preventDefault());
+        searchPeople();
     </script>
 }

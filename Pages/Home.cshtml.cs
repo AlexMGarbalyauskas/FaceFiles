@@ -59,14 +59,6 @@ public class HomeModel : PageModel
             query = query.Where(person => memberIds.Contains(person.Id));
         }
 
-        if (!string.IsNullOrWhiteSpace(SearchTerm))
-        {
-            var term = SearchTerm.Trim().ToLower();
-            query = query.Where(person =>
-                person.FirstName.ToLower().Contains(term) ||
-                (person.LastName ?? string.Empty).ToLower().Contains(term));
-        }
-
         AlphabeticalPeople = await query
             .OrderBy(person => person.FirstName)
             .ThenBy(person => person.LastName)

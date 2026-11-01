@@ -126,4 +126,11 @@ C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\FaceFiles.pd
 C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\FaceFiles.genruntimeconfig.cache
 C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\ref\FaceFiles.dll
 C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\FaceFiles.sourcelink.json
-C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\compressed\bw6dhu1m1y-j6n5upvih9.gz
+C:\Users\smart\AppData\Local\Temp\FaceFilesBuild\appsettings.json
+C:\Users\smart\AppData\Local\Temp\FaceFilesBuild\FaceFiles.staticwebassets.runtime.json
+C:\Users\smart\AppData\Local\Temp\FaceFilesBuild\FaceFiles.staticwebassets.endpoints.json
+C:\Users\smart\AppData\Local\Temp\FaceFilesBuild\FaceFiles.deps.json
+C:\Users\smart\AppData\Local\Temp\FaceFilesBuild\FaceFiles.runtimeconfig.json
+C:\Users\smart\AppData\Local\Temp\FaceFilesBuild\FaceFiles.dll
+C:\Users\smart\AppData\Local\Temp\FaceFilesBuild\FaceFiles.pdb
+C:\Users\smart\OneDrive\Desktop\Face_Files_Project\obj\Debug\net9.0\compressed\bw6dhu1m1y-emz7jy3nu0.gz

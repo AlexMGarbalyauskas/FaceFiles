@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FaceFiles")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+533e3d2dea4a0f7e916519cb52f114a2682e7aa0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7c1e5eea1fa654115489838e95063ec1346c3fc")]
 [assembly: System.Reflection.AssemblyProductAttribute("FaceFiles")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FaceFiles")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

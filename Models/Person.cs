@@ -25,8 +25,18 @@ public class Person
     [StringLength(150)]
     public string? Function { get; set; }
 
+    [StringLength(254)]
+    [EmailAddress]
+    public string? Email { get; set; }
+
+    [StringLength(50)]
+    public string? PhoneNumber { get; set; }
+
     [StringLength(500)]
     public string? Details { get; set; }
+
+    [StringLength(2000)]
+    public string? PersonalityEvaluation { get; set; }
 
     public string? AdditionalDetailsJson { get; set; }
 

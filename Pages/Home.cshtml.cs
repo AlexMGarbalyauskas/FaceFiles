@@ -4,6 +4,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 
@@ -45,6 +46,9 @@ public class HomeModel : PageModel
     // Error message that survives the redirect after a failed create/delete
     [TempData]
     public string? FolderError { get; set; }
+
+    [TempData]
+    public string? ImportMessage { get; set; }
 
     public async Task OnGetAsync(string? search, int? folder)
     {
@@ -112,7 +116,7 @@ public class HomeModel : PageModel
     {
         var export = await BuildExportAsync();
         var csv = new StringBuilder();
-        csv.AppendLine("Id,First name,Last name,Title,Email,Phone,Date of birth,Bio,Personality evaluation,Folders,Social links,Additional details,Notes history");
+        csv.AppendLine("Id,First name,Last name,Title,Function,Email,Phone,Date of birth,Bio,Personality evaluation,Folders,Social links,Additional details,Notes history");
 
         foreach (var person in export.People)
         {
@@ -121,6 +125,7 @@ public class HomeModel : PageModel
                 Csv(person.FirstName),
                 Csv(person.LastName),
                 Csv(person.Title),
+                Csv(person.Function),
                 Csv(person.Email),
                 Csv(person.PhoneNumber),
                 Csv(person.DateOfBirth),
@@ -161,6 +166,132 @@ public class HomeModel : PageModel
         }
     }
 
+    public async Task<IActionResult> OnPostImportCsvAsync(IFormFile? csvFile)
+    {
+        if (csvFile is null || csvFile.Length == 0)
+        {
+            ImportMessage = "Choose a CSV export file to import.";
+            return RedirectToPage();
+        }
+
+        if (!Path.GetExtension(csvFile.FileName).Equals(".csv", StringComparison.OrdinalIgnoreCase))
+        {
+            ImportMessage = "Only CSV files can be imported.";
+            return RedirectToPage();
+        }
+
+        using var reader = new StreamReader(csvFile.OpenReadStream(), Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
+        var rows = ParseCsv(await reader.ReadToEndAsync());
+        if (rows.Count < 2)
+        {
+            ImportMessage = "The CSV file does not contain any profile rows.";
+            return RedirectToPage();
+        }
+
+        var headers = rows[0];
+        var requiredHeaders = new[]
+        {
+            "First name", "Last name", "Title", "Email", "Phone", "Date of birth",
+            "Bio", "Personality evaluation", "Folders", "Social links", "Additional details"
+        };
+        var columnIndexes = requiredHeaders.ToDictionary(
+            header => header,
+            header => Array.FindIndex(headers.ToArray(), value => value.Equals(header, StringComparison.OrdinalIgnoreCase)));
+
+        if (columnIndexes.Values.Any(index => index < 0))
+        {
+            ImportMessage = "This CSV does not appear to be a FaceFiles profile export.";
+            return RedirectToPage();
+        }
+
+        var existingPeople = await _context.People.ToListAsync();
+        var folders = await _context.Folders.ToListAsync();
+        var imported = 0;
+        var skipped = 0;
+
+        foreach (var row in rows.Skip(1))
+        {
+            var firstName = GetCsvValue(row, columnIndexes["First name"]).Trim();
+            if (string.IsNullOrWhiteSpace(firstName))
+            {
+                skipped++;
+                continue;
+            }
+
+            var lastName = GetCsvValue(row, columnIndexes["Last name"]).Trim();
+            var email = GetCsvValue(row, columnIndexes["Email"]).Trim();
+            var duplicate = existingPeople.FirstOrDefault(person =>
+                person.FirstName.Equals(firstName, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(person.LastName?.Trim(), lastName, StringComparison.OrdinalIgnoreCase) &&
+                (string.IsNullOrWhiteSpace(email) ||
+                 string.Equals(person.Email?.Trim(), email, StringComparison.OrdinalIgnoreCase)));
+
+            if (duplicate is not null)
+            {
+                skipped++;
+                continue;
+            }
+
+            var person = new Person
+            {
+                FirstName = Limit(firstName, 100),
+                LastName = LimitOrNull(lastName, 100),
+                Title = LimitOrNull(GetCsvValue(row, columnIndexes["Title"]).Trim(), 100),
+                Function = LimitOrNull(GetCsvValue(row, FindOptionalColumn(headers, "Function")).Trim(), 150),
+                Email = LimitOrNull(email, 254),
+                PhoneNumber = LimitOrNull(GetCsvValue(row, columnIndexes["Phone"]).Trim(), 50),
+                DateOfBirth = ParseDate(GetCsvValue(row, columnIndexes["Date of birth"])),
+                Details = LimitOrNull(GetCsvValue(row, columnIndexes["Bio"]).Trim(), 500),
+                PersonalityEvaluation = LimitOrNull(GetCsvValue(row, columnIndexes["Personality evaluation"]).Trim(), 2000),
+                AdditionalDetails = SplitList(GetCsvValue(row, columnIndexes["Additional details"]))
+            };
+
+            person.SocialLinks = ParseSocialLinks(GetCsvValue(row, columnIndexes["Social links"]));
+            _context.People.Add(person);
+            await _context.SaveChangesAsync();
+            existingPeople.Add(person);
+
+            var importedNotes = GetCsvValue(row, FindOptionalColumn(headers, "Notes history")).Trim();
+            if (!string.IsNullOrWhiteSpace(importedNotes))
+            {
+                _context.ProfileNoteHistory.Add(new ProfileNoteHistory
+                {
+                    PersonId = person.Id,
+                    NoteType = "Imported notes",
+                    Content = importedNotes,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+
+            foreach (var folderName in SplitList(GetCsvValue(row, columnIndexes["Folders"])))
+            {
+                var folder = folders.FirstOrDefault(item =>
+                    item.Name.Equals(folderName, StringComparison.OrdinalIgnoreCase));
+
+                if (folder is null)
+                {
+                    folder = new Folder { Name = Limit(folderName, 100) };
+                    _context.Folders.Add(folder);
+                    await _context.SaveChangesAsync();
+                    folders.Add(folder);
+                }
+
+                _context.PersonFolders.Add(new PersonFolder
+                {
+                    PersonId = person.Id,
+                    FolderId = folder.Id
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            imported++;
+        }
+
+        ImportMessage = $"Imported {imported} profile{(imported == 1 ? string.Empty : "s")}. " +
+                        $"{skipped} row{(skipped == 1 ? string.Empty : "s")} skipped.";
+        return RedirectToPage();
+    }
+
     private async Task<ProfileExport> BuildExportAsync()
     {
         var people = await _context.People.AsNoTracking().ToListAsync();
@@ -174,6 +305,7 @@ public class HomeModel : PageModel
             person.FirstName,
             person.LastName,
             person.Title,
+            person.Function,
             person.Email,
             person.PhoneNumber,
             person.DateOfBirth?.ToString("yyyy-MM-dd"),
@@ -195,6 +327,107 @@ public class HomeModel : PageModel
         return $"\"{text.Replace("\"", "\"\"")}\"";
     }
 
+    private static List<List<string>> ParseCsv(string csv)
+    {
+        var rows = new List<List<string>>();
+        var row = new List<string>();
+        var value = new StringBuilder();
+        var quoted = false;
+
+        for (var index = 0; index < csv.Length; index++)
+        {
+            var character = csv[index];
+            if (character == '"')
+            {
+                if (quoted && index + 1 < csv.Length && csv[index + 1] == '"')
+                {
+                    value.Append('"');
+                    index++;
+                }
+                else
+                {
+                    quoted = !quoted;
+                }
+            }
+            else if (character == ',' && !quoted)
+            {
+                row.Add(value.ToString());
+                value.Clear();
+            }
+            else if ((character == '\r' || character == '\n') && !quoted)
+            {
+                if (character == '\r' && index + 1 < csv.Length && csv[index + 1] == '\n')
+                {
+                    index++;
+                }
+
+                row.Add(value.ToString());
+                value.Clear();
+                if (row.Any(field => !string.IsNullOrWhiteSpace(field)))
+                {
+                    rows.Add(row);
+                }
+                row = new List<string>();
+            }
+            else
+            {
+                value.Append(character);
+            }
+        }
+
+        if (value.Length > 0 || row.Count > 0)
+        {
+            row.Add(value.ToString());
+            if (row.Any(field => !string.IsNullOrWhiteSpace(field)))
+            {
+                rows.Add(row);
+            }
+        }
+
+        return rows;
+    }
+
+    private static string GetCsvValue(IReadOnlyList<string> row, int index) =>
+        index >= 0 && index < row.Count ? row[index] : string.Empty;
+
+    private static int FindOptionalColumn(IReadOnlyList<string> headers, string name) =>
+        Array.FindIndex(headers.ToArray(), value => value.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+    private static List<string> SplitList(string value) =>
+        value.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(item => !string.IsNullOrWhiteSpace(item))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+    private static List<SocialLink> ParseSocialLinks(string value)
+    {
+        return SplitList(value)
+            .Select(item =>
+            {
+                var separator = item.IndexOf(':');
+                return separator <= 0 || separator == item.Length - 1
+                    ? null
+                    : new SocialLink
+                    {
+                        Platform = item[..separator].Trim(),
+                        Url = item[(separator + 1)..].Trim()
+                    };
+            })
+            .Where(link => link is not null)
+            .Cast<SocialLink>()
+            .ToList();
+    }
+
+    private static DateTime? ParseDate(string value) =>
+        DateTime.TryParseExact(value.Trim(), "yyyy-MM-dd", CultureInfo.InvariantCulture,
+            DateTimeStyles.None, out var date) ? date : null;
+
+    private static string Limit(string value, int maxLength) =>
+        value.Length <= maxLength ? value : value[..maxLength];
+
+    private static string? LimitOrNull(string value, int maxLength) =>
+        string.IsNullOrWhiteSpace(value) ? null : Limit(value, maxLength);
+
     private sealed record ProfileExport(List<PersonExport> People);
 
     private sealed record PersonExport(
@@ -202,6 +435,7 @@ public class HomeModel : PageModel
         string FirstName,
         string? LastName,
         string? Title,
+        string? Function,
         string? Email,
         string? PhoneNumber,
         string? DateOfBirth,

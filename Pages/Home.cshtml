@@ -35,8 +35,22 @@
                     <li><a class="dropdown-item" asp-page-handler="BackupDatabase"><i class="bi bi-database-down me-2" aria-hidden="true"></i>Download database backup</a></li>
                 </ul>
             </div>
+            <form method="post" asp-page-handler="ImportCsv" enctype="multipart/form-data" id="importCsvForm">
+                <input type="file" id="csvFile" name="csvFile" accept=".csv,text/csv" class="d-none" />
+                <label for="csvFile" class="btn btn-outline-light">
+                    <i class="bi bi-upload me-1" aria-hidden="true"></i>Import CSV
+                </label>
+            </form>
         </div>
     </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ImportMessage))
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @Model.ImportMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
     @* ===== Folder bar: "All" is automatic, the rest are created by you ===== *@
     <div class="mb-4">
@@ -55,8 +69,21 @@
             }
         </div>
 
-        <div class="mt-2">
+        <div class="folder-toolbar mt-3">
             <button type="button" class="add-detail-link" id="showFolderForm">+ New folder</button>
+
+            @if (selectedId is not null)
+            {
+                <form method="post" asp-page-handler="DeleteFolder" onsubmit="return confirm('Delete this folder?');">
+                    <input type="hidden" name="folderId" value="@selectedId" />
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-danger folder-delete-button"
+                            disabled="@(Model.SelectedFolderPersonCount > 0)"
+                            title="@(Model.SelectedFolderPersonCount > 0 ? "Only empty folders can be deleted" : "Delete this folder")">
+                        <i class="bi bi-trash3 me-1" aria-hidden="true"></i> Delete folder
+                    </button>
+                </form>
+            }
         </div>
 
         @* Posts to OnPostCreateFolderAsync; Enter saves *@
@@ -82,22 +109,8 @@
     </div>
 
     <div class="mt-5">
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <div class="mb-3">
             <h2 class="h4 mb-0">@(Model.SelectedFolderName ?? "All people")</h2>
-
-            @* Delete is only allowed when the folder is empty (also enforced on the server) *@
-            @if (selectedId is not null)
-            {
-                <form method="post" asp-page-handler="DeleteFolder" onsubmit="return confirm('Delete this folder?');">
-                    <input type="hidden" name="folderId" value="@selectedId" />
-                    <button type="submit"
-                            class="btn btn-sm btn-outline-danger"
-                            disabled="@(Model.SelectedFolderPersonCount > 0)"
-                            title="@(Model.SelectedFolderPersonCount > 0 ? "Only empty folders can be deleted" : "Delete this folder")">
-                        <i class="bi bi-trash3" aria-hidden="true"></i> Delete folder
-                    </button>
-                </form>
-            }
         </div>
 
         @if (Model.AlphabeticalPeople.Count == 0)
@@ -167,6 +180,11 @@
 
         searchInput?.addEventListener('input', searchPeople);
         searchForm?.addEventListener('submit', event => event.preventDefault());
+        document.getElementById('csvFile')?.addEventListener('change', () => {
+            if (document.getElementById('csvFile')?.files?.length) {
+                document.getElementById('importCsvForm')?.submit();
+            }
+        });
         searchPeople();
     </script>
 }

@@ -11,6 +11,7 @@ FaceFiles is a private people-profile management web application built with ASP.
 - **Social links** with supported previews and direct-link fallbacks when a platform blocks embedding
 - **Optional OpenAI assistant** available from a profile page
 - **CSV and JSON exports** for portability and spreadsheet workflows
+- **CSV profile restore** to re-add profiles from a saved FaceFiles CSV export
 - **SQLite database backup** without stopping the application
 - **Responsive interface** for desktop and mobile layouts
 - **Local photo storage** under `wwwroot/images/user_photos`
@@ -147,6 +148,7 @@ Use the **Export & backup** menu on the Home page:
 
 - **CSV** is convenient for spreadsheets.
 - **JSON** preserves nested profile data, social links, additional details, and note history.
+- **Import CSV** restores profiles, folders, social links, and additional details from a saved FaceFiles CSV export. Existing matching profiles are skipped to avoid duplicates.
 - **Database backup** creates a consistent SQLite copy while the application is running.
 
 Backups contain personal information. Store them securely outside the repository and verify that a backup can be opened before relying on it.

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "JJExgzoIquLO0IRRmSxOnoGvUh3akUrkMz6utb5ENW4=",
+  "Hash": "f6eyZ5QcsZLM3U/RKFsLrUNJUwBkkvTsqH0Jx/aituQ=",
   "Source": "FaceFiles",
   "BasePath": "_content/FaceFiles",
   "Mode": "Default",
@@ -17,12 +17,12 @@
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\bw6dhu1m1y-hqv3eerdkw.gz",
+      "Identity": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\bw6dhu1m1y-6zmaqekeo5.gz",
       "SourceId": "FaceFiles",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/FaceFiles",
-      "RelativePath": "css/site#[.{fingerprint=hqv3eerdkw}]?.css.gz",
+      "RelativePath": "css/site#[.{fingerprint=6zmaqekeo5}]?.css.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -31,8 +31,8 @@
       "RelatedAsset": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\css\\site.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "q14a28b1uf",
-      "Integrity": "Anuy6NLRLEfZ5qqoleaVcV1Q2Zu868B2fZSdma5q8Vg=",
+      "Fingerprint": "r5ayuavbs4",
+      "Integrity": "EaIQS8cFQkzz36LwhVr1ulHzJ9+Jfge1u/jBfzOdjGY=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\css\\site.css"
@@ -52,8 +52,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "hqv3eerdkw",
-      "Integrity": "aXli4lSHsj8b0MaOeOsYT/a+PRgA0K3Zf4AqvzptFcc=",
+      "Fingerprint": "6zmaqekeo5",
+      "Integrity": "0qSnNqZdh90sShYNSpujghyl5eYV4B7VmJQ9IANqG6s=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
@@ -185,6 +185,27 @@
       "OriginalItemSpec": "wwwroot\\images\\user_photos\\98eb474517ff4e07966906a412ddbe14.png"
     },
     {
+      "Identity": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\images\\web-design.png",
+      "SourceId": "FaceFiles",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\",
+      "BasePath": "_content/FaceFiles",
+      "RelativePath": "images/web-design#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "5s9fel1el2",
+      "Integrity": "u057CFFPiSXfzt1jYQFa8Kw5hXL8/xRg5dTlznTr/T4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\web-design.png"
+    },
+    {
       "Identity": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\videos\\background.mp4",
       "SourceId": "FaceFiles",
       "SourceType": "Discovered",
@@ -229,13 +250,13 @@
   ],
   "Endpoints": [
     {
-      "Route": "css/site.css",
-      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\bw6dhu1m1y-hqv3eerdkw.gz",
+      "Route": "css/site.6zmaqekeo5.css",
+      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\bw6dhu1m1y-6zmaqekeo5.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000233863424"
+          "Quality": "0.000226705962"
         }
       ],
       "ResponseHeaders": [
@@ -245,19 +266,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4275"
+          "Value": "4410"
         },
         {
           "Name": "ETag",
-          "Value": "\"Anuy6NLRLEfZ5qqoleaVcV1Q2Zu868B2fZSdma5q8Vg=\""
+          "Value": "\"EaIQS8cFQkzz36LwhVr1ulHzJ9+Jfge1u/jBfzOdjGY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 06 Nov 2026 12:45:09 GMT"
+          "Value": "Fri, 06 Nov 2026 13:14:48 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "no-cache"
+          "Value": "max-age=31536000, immutable"
         },
         {
           "Name": "Content-Encoding",
@@ -273,18 +294,26 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"aXli4lSHsj8b0MaOeOsYT/a+PRgA0K3Zf4AqvzptFcc=\""
+          "Value": "W/\"0qSnNqZdh90sShYNSpujghyl5eYV4B7VmJQ9IANqG6s=\""
         }
       ],
       "EndpointProperties": [
         {
+          "Name": "fingerprint",
+          "Value": "6zmaqekeo5"
+        },
+        {
+          "Name": "label",
+          "Value": "css/site.css"
+        },
+        {
           "Name": "integrity",
-          "Value": "sha256-aXli4lSHsj8b0MaOeOsYT/a+PRgA0K3Zf4AqvzptFcc="
+          "Value": "sha256-0qSnNqZdh90sShYNSpujghyl5eYV4B7VmJQ9IANqG6s="
         }
       ]
     },
     {
-      "Route": "css/site.css",
+      "Route": "css/site.6zmaqekeo5.css",
       "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\css\\site.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -294,7 +323,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "23832"
+          "Value": "24428"
         },
         {
           "Name": "Content-Type",
@@ -302,121 +331,21 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"aXli4lSHsj8b0MaOeOsYT/a+PRgA0K3Zf4AqvzptFcc=\""
+          "Value": "\"0qSnNqZdh90sShYNSpujghyl5eYV4B7VmJQ9IANqG6s=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 06 Nov 2026 12:45:09 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-aXli4lSHsj8b0MaOeOsYT/a+PRgA0K3Zf4AqvzptFcc="
-        }
-      ]
-    },
-    {
-      "Route": "css/site.css.gz",
-      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\bw6dhu1m1y-hqv3eerdkw.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4275"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"Anuy6NLRLEfZ5qqoleaVcV1Q2Zu868B2fZSdma5q8Vg=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 06 Nov 2026 12:45:09 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-Anuy6NLRLEfZ5qqoleaVcV1Q2Zu868B2fZSdma5q8Vg="
-        }
-      ]
-    },
-    {
-      "Route": "css/site.hqv3eerdkw.css",
-      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\bw6dhu1m1y-hqv3eerdkw.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.000233863424"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4275"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"Anuy6NLRLEfZ5qqoleaVcV1Q2Zu868B2fZSdma5q8Vg=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 06 Nov 2026 12:45:09 GMT"
+          "Value": "Fri, 06 Nov 2026 13:14:48 GMT"
         },
         {
           "Name": "Cache-Control",
           "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"aXli4lSHsj8b0MaOeOsYT/a+PRgA0K3Zf4AqvzptFcc=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "hqv3eerdkw"
+          "Value": "6zmaqekeo5"
         },
         {
           "Name": "label",
@@ -424,13 +353,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-aXli4lSHsj8b0MaOeOsYT/a+PRgA0K3Zf4AqvzptFcc="
+          "Value": "sha256-0qSnNqZdh90sShYNSpujghyl5eYV4B7VmJQ9IANqG6s="
         }
       ]
     },
     {
-      "Route": "css/site.hqv3eerdkw.css",
-      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\css\\site.css",
+      "Route": "css/site.6zmaqekeo5.css.gz",
+      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\bw6dhu1m1y-6zmaqekeo5.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -439,7 +368,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "23832"
+          "Value": "4410"
         },
         {
           "Name": "Content-Type",
@@ -447,56 +376,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"aXli4lSHsj8b0MaOeOsYT/a+PRgA0K3Zf4AqvzptFcc=\""
+          "Value": "\"EaIQS8cFQkzz36LwhVr1ulHzJ9+Jfge1u/jBfzOdjGY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 06 Nov 2026 12:45:09 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "hqv3eerdkw"
-        },
-        {
-          "Name": "label",
-          "Value": "css/site.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-aXli4lSHsj8b0MaOeOsYT/a+PRgA0K3Zf4AqvzptFcc="
-        }
-      ]
-    },
-    {
-      "Route": "css/site.hqv3eerdkw.css.gz",
-      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\bw6dhu1m1y-hqv3eerdkw.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4275"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"Anuy6NLRLEfZ5qqoleaVcV1Q2Zu868B2fZSdma5q8Vg=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 06 Nov 2026 12:45:09 GMT"
+          "Value": "Fri, 06 Nov 2026 13:14:48 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -514,7 +398,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "hqv3eerdkw"
+          "Value": "6zmaqekeo5"
         },
         {
           "Name": "label",
@@ -522,7 +406,144 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-Anuy6NLRLEfZ5qqoleaVcV1Q2Zu868B2fZSdma5q8Vg="
+          "Value": "sha256-EaIQS8cFQkzz36LwhVr1ulHzJ9+Jfge1u/jBfzOdjGY="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.css",
+      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\bw6dhu1m1y-6zmaqekeo5.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000226705962"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4410"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EaIQS8cFQkzz36LwhVr1ulHzJ9+Jfge1u/jBfzOdjGY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 06 Nov 2026 13:14:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"0qSnNqZdh90sShYNSpujghyl5eYV4B7VmJQ9IANqG6s=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-0qSnNqZdh90sShYNSpujghyl5eYV4B7VmJQ9IANqG6s="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.css",
+      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\css\\site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24428"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0qSnNqZdh90sShYNSpujghyl5eYV4B7VmJQ9IANqG6s=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 06 Nov 2026 13:14:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-0qSnNqZdh90sShYNSpujghyl5eYV4B7VmJQ9IANqG6s="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.css.gz",
+      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\obj\\Debug\\net9.0\\compressed\\bw6dhu1m1y-6zmaqekeo5.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4410"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EaIQS8cFQkzz36LwhVr1ulHzJ9+Jfge1u/jBfzOdjGY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 06 Nov 2026 13:14:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-EaIQS8cFQkzz36LwhVr1ulHzJ9+Jfge1u/jBfzOdjGY="
         }
       ]
     },
@@ -1015,6 +1036,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-PkPl358FgrIqIMO39TYSES/ANM8h5CCn322uzBIX8Is="
+        }
+      ]
+    },
+    {
+      "Route": "images/web-design.5s9fel1el2.png",
+      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\images\\web-design.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8043"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"u057CFFPiSXfzt1jYQFa8Kw5hXL8/xRg5dTlznTr/T4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 06 Nov 2026 13:12:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "5s9fel1el2"
+        },
+        {
+          "Name": "label",
+          "Value": "images/web-design.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-u057CFFPiSXfzt1jYQFa8Kw5hXL8/xRg5dTlznTr/T4="
+        }
+      ]
+    },
+    {
+      "Route": "images/web-design.png",
+      "AssetFile": "C:\\Users\\smart\\OneDrive\\Desktop\\Face_Files_Project\\wwwroot\\images\\web-design.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8043"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"u057CFFPiSXfzt1jYQFa8Kw5hXL8/xRg5dTlznTr/T4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 06 Nov 2026 13:12:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-u057CFFPiSXfzt1jYQFa8Kw5hXL8/xRg5dTlznTr/T4="
         }
       ]
     },

@@ -378,6 +378,49 @@ else
         </aside>
 
         </div>
+
+        <button type="button" class="notes-history-toggle" id="notesHistoryToggle" aria-controls="notesHistoryPanel" aria-expanded="false">
+            <i class="bi bi-clock-history" aria-hidden="true"></i>
+            <span>Notes history</span>
+        </button>
+
+        <aside class="notes-history-panel" id="notesHistoryPanel" aria-label="Profile notes history" aria-hidden="true">
+            <div class="notes-history-panel-header">
+                <div>
+                    <p class="detail-eyebrow">TIMELINE</p>
+                    <h2>Notes history</h2>
+                    <span>Last 30 entries</span>
+                </div>
+                <button type="button" class="notes-history-close" id="notesHistoryClose" aria-label="Close notes history">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="notes-history-panel-content">
+                @if (Model.NoteHistory.Count == 0)
+                {
+                    <p class="detail-history-empty">Saved bio, evaluation, and note changes will appear here.</p>
+                }
+                else
+                {
+                    <ol class="detail-history-list">
+                        @foreach (var note in Model.NoteHistory)
+                        {
+                            <li class="detail-history-item">
+                                <span class="detail-history-marker" aria-hidden="true"></span>
+                                <div class="detail-history-content">
+                                    <div class="detail-history-meta">
+                                        <strong>@note.NoteType</strong>
+                                        <time datetime="@note.CreatedAt.ToString("O")">@note.CreatedAt.ToLocalTime().ToString("MMM d, yyyy · h:mm tt")</time>
+                                    </div>
+                                    <p>@note.Content</p>
+                                </div>
+                            </li>
+                        }
+                    </ol>
+                }
+            </div>
+        </aside>
+
         </div>
 
         @* ===== Delete confirmation modal. Posts to OnPostDeletePersonAsync ===== *@
@@ -434,6 +477,18 @@ else
 
         aiToggle?.addEventListener('click', () => setAiPanelOpen(true));
         aiClose?.addEventListener('click', () => setAiPanelOpen(false));
+
+        const notesHistoryToggle = document.getElementById('notesHistoryToggle');
+        const notesHistoryPanel = document.getElementById('notesHistoryPanel');
+        const notesHistoryClose = document.getElementById('notesHistoryClose');
+        const setNotesHistoryOpen = (isOpen) => {
+            notesHistoryPanel?.classList.toggle('is-open', isOpen);
+            notesHistoryPanel?.setAttribute('aria-hidden', (!isOpen).toString());
+            notesHistoryToggle?.setAttribute('aria-expanded', isOpen.toString());
+        };
+
+        notesHistoryToggle?.addEventListener('click', () => setNotesHistoryOpen(true));
+        notesHistoryClose?.addEventListener('click', () => setNotesHistoryOpen(false));
 
         const addAiMessage = (content, role) => {
             const message = document.createElement('div');

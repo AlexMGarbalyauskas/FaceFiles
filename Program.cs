@@ -110,6 +110,9 @@ using (var scope = app.Services.CreateScope())
     {
         db.Database.ExecuteSqlRaw("ALTER TABLE People ADD COLUMN PersonalityEvaluation TEXT NULL");
     }
+
+    db.Database.ExecuteSqlRaw(
+        "CREATE TABLE IF NOT EXISTS ProfileNoteHistory (Id INTEGER NOT NULL CONSTRAINT PK_ProfileNoteHistory PRIMARY KEY AUTOINCREMENT, PersonId INTEGER NOT NULL, NoteType TEXT NOT NULL, Content TEXT NOT NULL, CreatedAt TEXT NOT NULL)");
 }
 
 var isRender = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("RENDER"));

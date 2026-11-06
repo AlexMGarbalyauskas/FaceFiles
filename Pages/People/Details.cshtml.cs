@@ -37,6 +37,8 @@ public class DetailsModel : PageModel
     // Ids of the folders this person is currently in
     public List<int> MemberFolderIds { get; set; } = [];
 
+    public List<ProfileNoteHistory> NoteHistory { get; set; } = [];
+
     // Ticked folders from the checkboxes (empty = remove from all folders)
     [BindProperty]
     public List<int> SelectedFolderIds { get; set; } = [];
@@ -94,6 +96,14 @@ public class DetailsModel : PageModel
             .Where(link => link.PersonId == id)
             .Select(link => link.FolderId)
             .ToListAsync();
+
+        NoteHistory = await _context.ProfileNoteHistory
+            .AsNoTracking()
+            .Where(note => note.PersonId == id)
+            .OrderByDescending(note => note.CreatedAt)
+            .ThenByDescending(note => note.Id)
+            .Take(30)
+            .ToListAsync();
     }
 
     // Saves the ticked folders: adds missing links, removes unticked ones.
@@ -137,9 +147,11 @@ public class DetailsModel : PageModel
 
         if (!string.IsNullOrWhiteSpace(NewDetail))
         {
+            var detail = NewDetail.Trim();
             var details = person.AdditionalDetails;
-            details.Add(NewDetail.Trim());
+            details.Add(detail);
             person.AdditionalDetails = details;
+            _context.ProfileNoteHistory.Add(CreateHistory(id, "Additional detail", detail));
             await _context.SaveChangesAsync();
         }
 
@@ -201,6 +213,7 @@ public class DetailsModel : PageModel
         }
 
         person.Details = NewBio?.Trim();
+        _context.ProfileNoteHistory.Add(CreateHistory(id, "Bio", person.Details));
         await _context.SaveChangesAsync();
         return RedirectToPage(new { id });
     }
@@ -215,6 +228,7 @@ public class DetailsModel : PageModel
 
         var evaluation = NewPersonalityEvaluation?.Trim();
         person.PersonalityEvaluation = string.IsNullOrWhiteSpace(evaluation) ? null : evaluation;
+        _context.ProfileNoteHistory.Add(CreateHistory(id, "Personality evaluation", person.PersonalityEvaluation));
         await _context.SaveChangesAsync();
         return RedirectToPage(new { id });
     }
@@ -422,10 +436,12 @@ public class DetailsModel : PageModel
             if (string.IsNullOrWhiteSpace(EditedDetail))
             {
                 details.RemoveAt(DetailIndex);
+                _context.ProfileNoteHistory.Add(CreateHistory(id, "Additional detail removed", "An additional detail was removed."));
             }
             else
             {
                 details[DetailIndex] = EditedDetail.Trim();
+                _context.ProfileNoteHistory.Add(CreateHistory(id, "Additional detail", details[DetailIndex]));
             }
 
             person.AdditionalDetails = details;
@@ -483,5 +499,15 @@ public class DetailsModel : PageModel
     private Task<Person?> FindPersonAsync(int id)
     {
         return _context.People.FirstOrDefaultAsync(item => item.Id == id);
+    }
+
+    private static ProfileNoteHistory CreateHistory(int personId, string noteType, string? content)
+    {
+        return new ProfileNoteHistory
+        {
+            PersonId = personId,
+            NoteType = noteType,
+            Content = string.IsNullOrWhiteSpace(content) ? "Entry cleared." : content
+        };
     }
 }

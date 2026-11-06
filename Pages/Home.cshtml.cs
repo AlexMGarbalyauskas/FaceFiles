@@ -1,18 +1,23 @@
 using FaceFiles.Data;
 using FaceFiles.Models;
+using Microsoft.Data.Sqlite;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using System.Text.Json;
 
 namespace FaceFiles.Pages;
 
 public class HomeModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IConfiguration _configuration;
 
-    public HomeModel(ApplicationDbContext context)
+    public HomeModel(ApplicationDbContext context, IConfiguration configuration)
     {
         _context = context;
+        _configuration = configuration;
     }
 
     // A folder plus how many people are in it (shown on the folder buttons)
@@ -95,6 +100,117 @@ public class HomeModel : PageModel
         // Jump straight into the new folder
         return RedirectToPage(new { folder = newFolder.Id });
     }
+
+    public async Task<IActionResult> OnGetExportJsonAsync()
+    {
+        var export = await BuildExportAsync();
+        var json = JsonSerializer.Serialize(export, new JsonSerializerOptions { WriteIndented = true });
+        return File(Encoding.UTF8.GetBytes(json), "application/json", $"facefiles-profiles-{DateTime.UtcNow:yyyyMMdd-HHmmss}.json");
+    }
+
+    public async Task<IActionResult> OnGetExportCsvAsync()
+    {
+        var export = await BuildExportAsync();
+        var csv = new StringBuilder();
+        csv.AppendLine("Id,First name,Last name,Title,Email,Phone,Date of birth,Bio,Personality evaluation,Folders,Social links,Additional details,Notes history");
+
+        foreach (var person in export.People)
+        {
+            csv.AppendLine(string.Join(",",
+                Csv(person.Id),
+                Csv(person.FirstName),
+                Csv(person.LastName),
+                Csv(person.Title),
+                Csv(person.Email),
+                Csv(person.PhoneNumber),
+                Csv(person.DateOfBirth),
+                Csv(person.Bio),
+                Csv(person.PersonalityEvaluation),
+                Csv(string.Join("; ", person.Folders)),
+                Csv(string.Join("; ", person.SocialLinks.Select(link => $"{link.Platform}: {link.Url}"))),
+                Csv(string.Join("; ", person.AdditionalDetails)),
+                Csv(string.Join("; ", person.NoteHistory.Select(note => $"{note.NoteType} ({note.CreatedAt:yyyy-MM-dd HH:mm}): {note.Content}")))));
+        }
+
+        return File(Encoding.UTF8.GetBytes(csv.ToString()), "text/csv", $"facefiles-profiles-{DateTime.UtcNow:yyyyMMdd-HHmmss}.csv");
+    }
+
+    public async Task<IActionResult> OnGetBackupDatabaseAsync()
+    {
+        var temporaryPath = Path.Combine(Path.GetTempPath(), $"FaceFiles-{Guid.NewGuid():N}.db");
+        try
+        {
+            var connectionString = _configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("The database connection string is not configured.");
+
+            await using var source = new SqliteConnection(connectionString);
+            await using var destination = new SqliteConnection($"Data Source={temporaryPath}");
+            await source.OpenAsync();
+            await destination.OpenAsync();
+            source.BackupDatabase(destination);
+
+            var bytes = await System.IO.File.ReadAllBytesAsync(temporaryPath);
+            return File(bytes, "application/vnd.sqlite3", $"facefiles-backup-{DateTime.UtcNow:yyyyMMdd-HHmmss}.db");
+        }
+        finally
+        {
+            if (System.IO.File.Exists(temporaryPath))
+            {
+                System.IO.File.Delete(temporaryPath);
+            }
+        }
+    }
+
+    private async Task<ProfileExport> BuildExportAsync()
+    {
+        var people = await _context.People.AsNoTracking().ToListAsync();
+        var folders = await _context.Folders.AsNoTracking().ToListAsync();
+        var links = await _context.PersonFolders.AsNoTracking().ToListAsync();
+        var noteHistory = await _context.ProfileNoteHistory.AsNoTracking().ToListAsync();
+        var folderNames = folders.ToDictionary(folder => folder.Id, folder => folder.Name);
+
+        return new ProfileExport(people.Select(person => new PersonExport(
+            person.Id,
+            person.FirstName,
+            person.LastName,
+            person.Title,
+            person.Email,
+            person.PhoneNumber,
+            person.DateOfBirth?.ToString("yyyy-MM-dd"),
+            person.Details,
+            person.PersonalityEvaluation,
+            links.Where(link => link.PersonId == person.Id)
+                .Where(link => folderNames.ContainsKey(link.FolderId))
+                .Select(link => folderNames[link.FolderId])
+                .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                .ToList(),
+            person.SocialLinks,
+            person.AdditionalDetails,
+            noteHistory.Where(note => note.PersonId == person.Id).OrderBy(note => note.CreatedAt).ToList())).ToList());
+    }
+
+    private static string Csv(object? value)
+    {
+        var text = Convert.ToString(value) ?? string.Empty;
+        return $"\"{text.Replace("\"", "\"\"")}\"";
+    }
+
+    private sealed record ProfileExport(List<PersonExport> People);
+
+    private sealed record PersonExport(
+        int Id,
+        string FirstName,
+        string? LastName,
+        string? Title,
+        string? Email,
+        string? PhoneNumber,
+        string? DateOfBirth,
+        string? Bio,
+        string? PersonalityEvaluation,
+        List<string> Folders,
+        List<SocialLink> SocialLinks,
+        List<string> AdditionalDetails,
+        List<ProfileNoteHistory> NoteHistory);
 
     public async Task<IActionResult> OnPostDeleteFolderAsync(int folderId)
     {

@@ -17,4 +17,6 @@ public class ApplicationDbContext : DbContext
 
     // Which people are in which folders (many-to-many)
     public DbSet<PersonFolder> PersonFolders => Set<PersonFolder>();
+
+    public DbSet<ProfileNoteHistory> ProfileNoteHistory => Set<ProfileNoteHistory>();
 }
